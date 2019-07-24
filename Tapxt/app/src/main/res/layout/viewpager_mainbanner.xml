@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bannerItem"
+            type="com.springsthursday.tapxt.item.BannerItem" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="90dp">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{bannerItem.title}"
+                    android:textColor="@color/defaultWhite"
+                    android:layout_marginLeft="@dimen/layoutLeftMargin"
+                    android:fontFamily="@font/nanumsquareextrabold"
+                    android:textSize="@dimen/bannerTitleSize"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+                <LinearLayout
+                    android:id ="@+id/commentLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/layoutLeftMargin"
+                    android:layout_marginRight="@dimen/bannerDescriptionRightMargin"
+                    android:layout_marginTop="@dimen/contentTopMargin"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title">
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{bannerItem.description}"
+                        android:textColor="@color/defaultWhite"
+                        android:textSize="@dimen/bannerDescription"
+                        android:fontFamily="@font/nanumsquarebold" />
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
+</layout>

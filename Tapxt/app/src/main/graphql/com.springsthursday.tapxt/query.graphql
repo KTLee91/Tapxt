@@ -1,0 +1,276 @@
+mutation requestSmsVerification($phoneNumber : String!){
+    sendSMSVerification(phoneNumber : $phoneNumber)
+}
+
+mutation confirmSmsVerification($secret : String!, $phoneNumber : String!)
+{
+    confirmSMSVerification(secret : $secret, phoneNumber : $phoneNumber)
+}
+
+mutation createAccount($phoneNumber : String!)
+{
+    createAccount(phoneNumber : $phoneNumber)
+}
+
+query getUserProfile
+{
+    me{
+              avatar
+              name
+              nickname
+              phoneNumber
+              email
+              commentsCount
+              likesCount
+              followingCount
+              clapsCount
+              tags {
+                text
+              }
+              follows {
+                creator {
+                  avatar
+                  nickname
+                }
+              }
+              likes {
+                 episode {
+                  id
+                  sequence
+                  title
+                  story {
+                    title
+                    cover
+                  }
+                }
+              }
+              claps {
+                comment {
+                  text
+                  user {
+                    avatar
+                    nickname
+                  }
+                }
+              }
+              viewed {
+                id
+                episode {
+                  sequence
+                  title
+                  story {
+                    cover
+                    title
+                  }
+                }
+              }
+              creator {
+              	avatar
+                nickname
+                followersCount
+                stories {
+                  title
+                  cover
+                  characters {
+                    id
+                    name
+                  }
+                  episodes {
+                    id
+                    title
+          					likesCount
+                  }
+                }
+              }
+    }
+}
+
+mutation editUser($avatar : String, $nickname: String, $name: String, $email: String, $birth: String, $gender: String)
+{
+    editUser(avatar : $avatar, nickname : $nickname, name : $name, email : $email, birth : $birth, gender : $gender)
+    {
+        id
+    }
+}
+
+query seeEpisode($id : String!)
+{
+    seeEpisode(id : $id)
+    {
+        id
+        isLiked
+        creator{
+            avatar
+            nickname
+        }
+        story{
+            title
+        }
+        title
+        sequence
+        costType{
+            type
+        }
+        cost
+        scenes{
+            id
+            title
+            sequence
+            sceneProperty{
+                background
+            }
+            contents{
+                contentType{
+                    type
+                }
+                contentPosition{
+                    position
+                }
+                contentProperty{
+                    textColor
+                    boxColor
+                    bold
+                    italic
+                }
+                character{
+                    name
+                    avatar
+                }
+                text
+                url
+            }
+        }
+        comments{
+            id
+            text
+            isSelf
+            user{
+                id
+                avatar
+                nickname
+            }
+            claps{
+                user{
+                    id
+                    nickname
+                }
+            }
+            clapsCount
+        }
+    }
+}
+
+query seeStory($title : String!){
+    seeStory(title : $title)
+    {
+        title
+        description
+        cover
+        creator {
+            nickname
+            avatar
+            isFollowed
+        }
+        episodes {
+            id
+            title
+            sequence
+            isLiked
+            createdAt
+        }
+        characters {
+            id
+            name
+            nickname
+         }
+		 tags {
+            id
+            text
+        }
+    }
+}
+
+mutation CreateComment($text : String!, $episode : String!)
+{
+    createComment(text : $text, episode : $episode)
+}
+
+mutation DeleteComment($id : String!)
+{
+    deleteComment(id : $id)
+}
+
+mutation EditComment($id : String!, $text : String!)
+{
+    editComment(id:$id, text : $text)
+    {
+        id
+    }
+}
+
+mutation toggleClap($id : String!)
+{
+    toggleClap(id : $id)
+}
+
+mutation toggleFollow($nickname : String!)
+{
+    toggleFollowCreator(nickname : $nickname)
+}
+
+mutation toggleEpisodeLike($id : String!)
+{
+    toggleLike(id: $id)
+}
+
+query InqueryBanners{
+  seeBanners{
+	id
+    title
+    description
+    url
+    thumb
+    story
+    {
+        cover
+        episodes
+        {
+           id
+           sequence
+           title
+           isLiked
+        }
+        creator
+        {
+            nickname
+            avatar
+            isFollowed
+        }
+        tags
+        {
+            text
+        }
+    }
+  }
+}
+
+query seeFeed{
+	seeFeed{
+ 		text
+        stories {
+            id
+            title
+            cover
+            description
+            likesCount
+            episodesCount
+        tags {
+            text
+      }
+    }
+  }
+}
+
+
+
+

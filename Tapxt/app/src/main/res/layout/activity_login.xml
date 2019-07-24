@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.springsthursday.tapxt.presenter.LoginPresenter" />
+    </data>
+<android.support.constraint.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/loginbackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/loginLeftMargin"
+            android:layout_marginRight="@dimen/loginRightMargin"
+            android:fontFamily="@font/nanumsquareregular"
+            android:hint="@string/phoneNumberHint"
+            android:inputType="number"
+            android:text="@={viewModel.phoneNumber}"
+            android:textColor="@color/defaultWhite"
+            android:textColorHint="@color/defaultWhite"
+            android:textColorLink="@color/defaultWhite"
+            tools:ignore="RtlHardcoded,TextFields"
+            android:importantForAutofill="no" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/loginLeftMargin"
+            android:layout_marginTop="@dimen/loginTopMargin"
+            android:layout_marginRight="@dimen/loginRightMargin"
+            android:fontFamily="@font/nanumsquareregular"
+            android:textColor="@color/defaultWhite"
+            android:background="@drawable/loginbutton"
+            android:onClick="@{viewModel :: MoveVerificationAcitivity}"
+            android:text="@string/title_activity_login"
+            tools:ignore="RtlHardcoded" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+</layout>

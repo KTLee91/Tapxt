@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Tapxt</string>
+
+    <!--Login Activity -->
+    <string name="title_activity_login">로그인</string>
+    <string name="phoneNumberHint">휴대전화 번호를 입력해주세요</string>
+    <string name="requestVerificationNumber">인증 번호 요청 중..</string>
+
+    <!--Verification Activitiy>-->
+    <string name="VerificationHint">인증번호</string>
+    <string name="ConfirmVerification">확인</string>
+
+    <string name="prompt_phoneNumber">PhoneNumber</string>
+    <string name="prompt_authenticationNumber">Authentication number</string>
+    <string name="action_sign_in">Sign in or register</string>
+
+    <string name="emptyTitle">""</string>
+
+    <!--Home Fragment -->
+    <string name="homeAppbarTitle">홈</string>
+</resources>

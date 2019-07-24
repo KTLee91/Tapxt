@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="commentItem"
+            type="com.springsthursday.tapxt.item.CommentItem" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_orion_user"
+            imageUrl = "@{commentItem.avatar}"/>
+
+        <TextView
+            android:id="@+id/nickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="@{commentItem.userNickName}"
+            android:textSize="12dp"
+            app:layout_constraintLeft_toRightOf="@id/avatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id ="@+id/commentLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toRightOf="@id/avatar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nickName">
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chatbubble"
+                android:inputType="textMultiLine"
+                android:text="@{commentItem.text}" />
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/claps"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:lottie_fileName = "like_gray.json"
+            app:layout_constraintLeft_toLeftOf="@id/commentLayout"
+            app:layout_constraintTop_toBottomOf="@id/commentLayout"/>
+
+        <TextView
+            android:id="@+id/clapsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@{commentItem.clapsCount}"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/commentLayout"
+            app:layout_constraintLeft_toRightOf="@id/claps"/>
+
+        <TextView
+            android:id="@+id/update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:textSize="12dp"
+            android:text="수정"
+            android:textColor="#A866EE"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/nickName"
+            app:layout_constraintLeft_toRightOf="@id/nickName" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="12dp"
+            android:text="삭제"
+            android:textColor="#A866EE"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/nickName"
+            app:layout_constraintLeft_toRightOf="@id/update" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
