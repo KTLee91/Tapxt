@@ -11,6 +11,7 @@ public interface Listener {
     interface OnItemClickListener{
         void onItemClick(EpisodeItem item);
         void onTextClick(int oederby);
+        void onCommentClick(EpisodeItem item);
         void onAlarmClick(ToggleButton lottie);
         void onFollowClick(ToggleButton lottie, StoryItem item);
     }

@@ -31,5 +31,47 @@
             android:textColor="@color/textColor"
             app:layout_constraintLeft_toLeftOf="@id/title"
             app:layout_constraintTop_toBottomOf="@id/title"/>
+
+        <TextView
+            android:id="@+id/commentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/left_comment"
+            android:layout_marginRight="@dimen/ContentCoverLayoutRight"
+            android:text="@{episodeItem.commentCount}"
+            android:textColor="@color/defaultWhite"
+            android:fontFamily="@font/nanumsquareregular"
+            android:drawablePadding="8dp"
+            android:textSize="@dimen/ContentCoverCountSize"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textView"/>
+
+        <TextView
+            android:id="@+id/likeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{episodeItem.likeCount}"
+            android:drawableLeft="@drawable/left_like"
+            android:layout_marginRight="@dimen/ContentCoverContentRight"
+            android:textColor="@color/defaultWhite"
+            android:fontFamily="@font/nanumsquareregular"
+            android:textSize="@dimen/ContentCoverCountSize"
+            android:drawablePadding="8dp"
+            app:layout_constraintRight_toLeftOf="@id/commentCount"
+            app:layout_constraintTop_toTopOf="@id/commentCount"/>
+
+        <TextView
+            android:id="@+id/inquiryCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{episodeItem.inquiryCount}"
+            android:layout_marginRight="@dimen/ContentCoverContentRight"
+            android:drawableLeft="@drawable/left_read"
+            android:textColor="@color/defaultWhite"
+            android:fontFamily="@font/nanumsquareregular"
+            android:textSize="@dimen/ContentCoverCountSize"
+            android:drawablePadding="8dp"
+            app:layout_constraintRight_toLeftOf="@id/likeCount"
+            app:layout_constraintTop_toTopOf="@id/commentCount"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

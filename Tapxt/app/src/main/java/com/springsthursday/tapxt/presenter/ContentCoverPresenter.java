@@ -118,6 +118,9 @@ public class ContentCoverPresenter {
                             episodeItem.setTitle(episode.title());
                             episodeItem.setLiked(episode.isLiked());
                             episodeItem.setCreatedAt(episode.createdAt());
+                            episodeItem.setCommentCount(episode.comments().size());
+                            episodeItem.setLikeCount(episode.likesCount());
+                            episodeItem.setInquiryCount(episode.viewCount());
 
                             item.addEpisodeItem(episodeItem);
                        }
@@ -174,6 +177,11 @@ public class ContentCoverPresenter {
                 item.setFollowed(true);
             }
             toggleFollow(item.getNickName());
+        }
+
+        @Override
+        public void onCommentClick(EpisodeItem item) {
+            activity.openCommentActivity(item.getEpidoseId());
         }
     }
 

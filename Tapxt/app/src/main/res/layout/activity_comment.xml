@@ -9,7 +9,8 @@
     </data>
 <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
@@ -27,7 +28,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@drawable/appbargradient"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -39,31 +40,37 @@
         android:text="@{viewModel.appbarTitle}"
         android:layout_gravity="center"
         android:id="@+id/toolbar_title"
-        android:textSize="20sp"
+        android:fontFamily="@font/nanumsquareextrabold"
+        android:textColor="@color/defaultWhite"
+        android:textSize="@dimen/appbarTitleSize"
         />
     </android.support.v7.widget.Toolbar>
 
     <View
         android:id="@+id/view6"
         android:layout_width="0dp"
-        android:layout_height="3.5dp"
+        android:layout_height="2dp"
         android:layout_marginBottom="10dp"
-        android:background="#B3B3B3"
+        android:background="@color/defaultWhite"
+        android:visibility="@{viewModel.dividerVisibility}"
         app:layout_constraintBottom_toTopOf="@id/inputComment"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
+        bindCommentAdapter="@{viewModel.adapter}"
+        bindCommentItems="@{viewModel.items}"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/CommentLayoutTop"
+        android:layout_marginBottom="@dimen/CommentLayoutBottom"
         app:layout_constraintBottom_toTopOf="@id/view6"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        bindCommentAdapter="@{viewModel.adapter}"
-        bindCommentItems="@{viewModel.items}">
+        app:layout_constraintVertical_bias="1.0">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -71,29 +78,30 @@
         android:id="@+id/inputComment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/chatbubble"
+        android:layout_marginLeft="@dimen/CommentLayoutLeft"
+        android:layout_marginRight="@dimen/CommentEditTextBetweenImage"
+        android:layout_marginBottom="@dimen/CommentLayoutBottom"
+        android:background="@drawable/loginbutton"
         android:ems="10"
         android:inputType="textMultiLine|textPersonName"
-        android:text= "@={viewModel.editComment}"
+        android:maxLines="8"
+        android:text="@={viewModel.editComment}"
+        android:visibility="@{viewModel.inputCommentVisibility}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toLeftOf="@id/imageView2" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="@dimen/CommentLayoutRight"
         contextImage = "@{viewModel.editComment}"
-        app:srcCompat="@drawable/ic_new_comment_gray"
+        app:srcCompat="@drawable/ic_new_comment_white"
         android:onClickListener="@{viewModel :: saveComment}"
+        android:visibility="@{viewModel.addBtnVisibility}"
         app:layout_constraintBottom_toBottomOf="@id/inputComment"
-        app:layout_constraintLeft_toRightOf="@id/inputComment"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/inputComment" />
-
-
 </android.support.constraint.ConstraintLayout>
 </layout>

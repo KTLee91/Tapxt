@@ -98,9 +98,4 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         }
         return true;
     }
-
-    @Override
-    public void setAppbarExpanded() {
-        binding.appbar.setExpanded(false);
-    }
 }

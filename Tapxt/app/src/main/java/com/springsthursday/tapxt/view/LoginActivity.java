@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             View view = getLayoutInflater().inflate(R.layout.dialog_progressbar, null);
             ((TextView)view.findViewById(R.id.loadingMessage)).setText(loadingMessage);
             builder.setView(view);
-            Dialog dialog = builder.create();
+            dialog = builder.create();
             dialog.setCancelable(false);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -105,6 +105,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         if(dialog != null) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             dialog.dismiss();
+            dialog = null;
         }
     }
 }

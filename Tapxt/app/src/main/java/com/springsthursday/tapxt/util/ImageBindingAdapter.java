@@ -28,7 +28,7 @@ public class ImageBindingAdapter {
     @BindingAdapter("contextImage")
     public static void contextImage(final ImageView imageView, final String editComment) {
         if(editComment.isEmpty())
-            imageView.setImageResource(R.drawable.ic_new_comment_gray);
+            imageView.setImageResource(R.drawable.ic_new_comment_white);
         else
             imageView.setImageResource(R.drawable.ic_new_comment_darkerviolet);
     }

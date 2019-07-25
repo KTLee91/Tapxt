@@ -16,6 +16,9 @@ public class EpisodeItem implements Serializable {
     private int sequence = 0;
     private boolean isLiked = false;
     private String createdAt = "";
+    private int likeCount = 0;
+    private int inquiryCount = 0;
+    private int commentCount = 0;
 
     public String getEpidoseId() {
         return epidoseId;
@@ -37,6 +40,18 @@ public class EpisodeItem implements Serializable {
         return createdAt.substring(0,10);
     }
 
+    public String getLikeCount() {
+        return String.valueOf(likeCount);
+    }
+
+    public String getInquiryCount() {
+        return String.valueOf(inquiryCount);
+    }
+
+    public String getCommentCount() {
+        return String.valueOf(commentCount);
+    }
+
     public void setEpidoseId(String epidoseId) {
         this.epidoseId = epidoseId;
     }
@@ -55,5 +70,17 @@ public class EpisodeItem implements Serializable {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public void setInquiryCount(int inquiryCount) {
+        this.inquiryCount = inquiryCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

@@ -14,10 +14,10 @@
 
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/CommentLayoutLeft"
+            android:layout_marginTop="@dimen/CommentBetweenComment"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_orion_user"
@@ -27,10 +27,12 @@
             android:id="@+id/nickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginLeft="@dimen/CommentAvatarBetweenNickName"
+            android:layout_marginTop="@dimen/CommentBetweenComment"
             android:text="@{commentItem.userNickName}"
-            android:textSize="12dp"
+            android:textSize="@dimen/nickNameSize"
+            android:textColor="@color/defaultWhite"
+            android:fontFamily="@font/nanumsquareregular"
             app:layout_constraintLeft_toRightOf="@id/avatar"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,28 +52,25 @@
                 android:id="@+id/comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/chatbubble"
+                android:background="@drawable/rectangle_white"
+                android:fontFamily="@font/nanumsquareregular"
+                android:textSize="@dimen/CommentTextSize"
                 android:inputType="textMultiLine"
                 android:text="@{commentItem.text}" />
         </LinearLayout>
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/claps"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:lottie_fileName = "like_gray.json"
-            app:layout_constraintLeft_toLeftOf="@id/commentLayout"
-            app:layout_constraintTop_toBottomOf="@id/commentLayout"/>
 
         <TextView
             android:id="@+id/clapsCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/CommentLikeBetweenComment"
             android:text="@{commentItem.clapsCount}"
+            android:drawableLeft="@drawable/left_like_white"
+            android:drawablePadding="8dp"
+            android:textColor="@color/defaultWhite"
             android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/commentLayout"
-            app:layout_constraintLeft_toRightOf="@id/claps"/>
+            app:layout_constraintLeft_toLeftOf="@id/commentLayout"/>
 
         <TextView
             android:id="@+id/update"
@@ -80,8 +79,9 @@
             android:layout_marginLeft="30dp"
             android:textSize="12dp"
             android:text="수정"
-            android:textColor="#A866EE"
+            android:textColor="@color/defaultWhite"
             android:visibility="visible"
+            android:fontFamily="@font/nanumsquareregular"
             app:layout_constraintBottom_toBottomOf="@id/nickName"
             app:layout_constraintLeft_toRightOf="@id/nickName" />
 
@@ -89,14 +89,13 @@
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/CommentDeleteBetweenUpdate"
             android:textSize="12dp"
             android:text="삭제"
-            android:textColor="#A866EE"
+            android:textColor="@color/defaultWhite"
             android:visibility="visible"
+            android:fontFamily="@font/nanumsquareregular"
             app:layout_constraintBottom_toBottomOf="@id/nickName"
             app:layout_constraintLeft_toRightOf="@id/update" />
-
-
     </android.support.constraint.ConstraintLayout>
 </layout>

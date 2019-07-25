@@ -87,6 +87,13 @@ public class ContentCoverActivity extends AppCompatActivity implements ContentCo
     }
 
     @Override
+    public void openCommentActivity(String episodeId) {
+        Intent intent = new Intent(this, CommentActivity.class);
+        intent.putExtra("EpisodeID", episodeId);
+        startActivity(intent);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true ;
     }

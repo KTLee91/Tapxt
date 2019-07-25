@@ -157,8 +157,6 @@ public class ContentPresenter {
                 episodeTitle.set(dataResponse.data().seeEpisode().title());
                 isLiked = dataResponse.data().seeEpisode().isLiked();
                 episodeID = dataResponse.data().seeEpisode().id();
-
-                CommentRepository.getInstance().initializeComment(dataResponse);
                 contentList = ContentRepostory.getInstance().LoadContentList(dataResponse);
 
                 recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerViewTouchListener()));

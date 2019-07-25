@@ -3,6 +3,7 @@ package com.springsthursday.tapxt.presenter;
 import android.content.Context;
 import android.databinding.ObservableField;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -13,6 +14,8 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.springsthursday.tapxt.BindingAdapter.CommentAdapter;
 import com.springsthursday.tapxt.CreateCommentMutation;
 import com.springsthursday.tapxt.DeleteCommentMutation;
+import com.springsthursday.tapxt.R;
+import com.springsthursday.tapxt.SeeCommentsQuery;
 import com.springsthursday.tapxt.ToggleClapMutation;
 import com.springsthursday.tapxt.constract.CommentContract;
 import com.springsthursday.tapxt.item.CommentItem;
@@ -28,6 +31,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.operators.observable.ObservableRange;
 import io.reactivex.schedulers.Schedulers;
 
 public class CommentPresenter {
@@ -37,11 +41,13 @@ public class CommentPresenter {
     public ObservableField<String> appbarTitle;
     public ObservableField<String> editComment;
     public ObservableField<Integer> loaderVisibility;
+    public ObservableField<Integer> dividerVisibility;
+    public ObservableField<Integer> inputCommentVisibility;
+    public ObservableField<Integer> addBtnVisibility;
 
     private CompositeDisposable disposable;
     private String episodeID;
     private Context context;
-    private boolean flagAddingComment = false;
     private LottieAnimationView lottie;
     private CommentContract.View activity;
 
@@ -55,14 +61,58 @@ public class CommentPresenter {
         appbarTitle = new ObservableField<>();
         editComment = new ObservableField<>("");
         loaderVisibility = new ObservableField<>(View.GONE);
+        dividerVisibility = new ObservableField<>(View.GONE);
+        inputCommentVisibility = new ObservableField<>(View.GONE);
+        addBtnVisibility = new ObservableField<>(View.GONE);
 
-        adapter.set(new CommentAdapter(new ClickListener()));
-        appbarTitle.set("댓글 (" + CommentRepository.getInstance().getCommentList().size() + ")");
+        adapter.set(new CommentAdapter(new ClickListener(), context));
     }
 
-    public void loadData()
+    public void loadCommentList()
     {
-        items.set(CommentRepository.getInstance().getCommentList());
+        loaderVisibility.set(View.VISIBLE);
+        lottie.playAnimation();
+
+        ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
+
+        SeeCommentsQuery query =  SeeCommentsQuery
+                .builder()
+                .id(this.episodeID)
+                .build();
+        ApolloCall<SeeCommentsQuery.Data> apolloCall1 = apolloClienmt.query(query);
+        Observable<Response<SeeCommentsQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
+
+        disposable = new CompositeDisposable();
+
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<SeeCommentsQuery.Data>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
+                    @Override
+                    public void onNext(Response<SeeCommentsQuery.Data> dataResponse) {
+                        if(dataResponse == null) {
+                            Toast.makeText(context, "예기치 못한 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if(dataResponse.errors().size() > 0) {
+                            Toast.makeText(context, dataResponse.errors().get(0).toString(), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        loaderVisibility.set(View.GONE);
+
+                        items.set(CommentRepository.getInstance().getCommentList(dataResponse));
+                        appbarTitle.set("댓글 (" + items.get().size() + ")");
+                    }
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onComplete() {}
+                });
     }
 
     public void setEpisodeID(String episdeID)
@@ -77,13 +127,9 @@ public class CommentPresenter {
 
     public void saveComment(View view)
     {
-        if(flagAddingComment == true) return;
+        activity.hideKeybord();
         if(editComment.get().isEmpty()) return;
-
-        lottie.playAnimation();
-        loaderVisibility.set(View.VISIBLE);
-
-        flagAddingComment = true;
+        activity.showProgressDialog("댓글 생성 중...");
 
         ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
@@ -106,6 +152,9 @@ public class CommentPresenter {
                     }
                     @Override
                     public void onNext(Response<CreateCommentMutation.Data> dataResponse) {
+
+                        activity.hideProgressDialog();
+
                         if(dataResponse == null) {
                             Toast.makeText(context, "예기치 못한 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                             return;
@@ -115,6 +164,8 @@ public class CommentPresenter {
                             return;
                         }
 
+                        showView();
+
                         CommentItem commentItem = new CommentItem();
                         commentItem.setAvatar(UserInfo.getInstance().userInfoItem.getImageUrl());
                         commentItem.setUserNickName(UserInfo.getInstance().userInfoItem.getNickName());
@@ -123,13 +174,12 @@ public class CommentPresenter {
                         commentItem.setId(dataResponse.data().createComment());
 
                         adapter.get().addItem(commentItem);
-
-                        flagAddingComment = false;
-                        loaderVisibility.set(View.GONE);
-                        appbarTitle.set("댓글 (" + CommentRepository.getInstance().getCommentList().size() + ")");
+                        appbarTitle.set("댓글 (" + adapter.get().getItemCount() + ")");
                     }
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {
+                        activity.hideProgressDialog();
+                    }
 
                     @Override
                     public void onComplete() {}
@@ -145,8 +195,7 @@ public class CommentPresenter {
 
         @Override
         public void onDeleteTextClickListener(final CommentItem item) {
-            loaderVisibility.set(View.VISIBLE);
-            lottie.playAnimation();
+            activity.showProgressDialog("댓글 삭제 중...");
 
             ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
@@ -168,6 +217,9 @@ public class CommentPresenter {
                         }
                         @Override
                         public void onNext(Response<DeleteCommentMutation.Data> dataResponse) {
+
+                            activity.hideProgressDialog();
+
                             if(dataResponse == null) {
                                 Toast.makeText(context, "예기치 못한 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                                 return;
@@ -177,14 +229,15 @@ public class CommentPresenter {
                                 return;
                             }
                             if(dataResponse.data().deleteComment() == true) {
-                                loaderVisibility.set(View.GONE);
                                 adapter.get().removeItem(item);
-                                appbarTitle.set("댓글 (" + CommentRepository.getInstance().getCommentList().size() + ")");
+                                appbarTitle.set("댓글 (" + adapter.get().getItemCount()+ ")");
                             }
 
                         }
                         @Override
-                        public void onError(Throwable e) {}
+                        public void onError(Throwable e) {
+                            activity.hideProgressDialog();
+                        }
 
                         @Override
                         public void onComplete() {}
@@ -193,10 +246,10 @@ public class CommentPresenter {
         }
 
         @Override
-        public void onLottieClickListener(final CommentItem item, LottieAnimationView lottie) {
+        public void onClapsClickListener(final CommentItem item, TextView claps) {
            if(item.isClapsMe())
            {
-               lottie.setAnimation("like_gray.json");
+               claps.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.left_like_white, null),null,null,null);
                int count = Integer.parseInt(item.clapsCount.get());
                --count;
                item.clapsCount.set(String.valueOf(count));
@@ -204,11 +257,10 @@ public class CommentPresenter {
            }
            else
            {
-               lottie.setAnimation("like_red.json");
+               claps.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.left_like_red, null),null,null,null);
                int count = Integer.parseInt(item.clapsCount.get());
                ++count;
                item.clapsCount.set(String.valueOf(count));
-               lottie.playAnimation();
                item.addClaps(UserInfo.getInstance().userInfoItem.getNickName());
            }
 
@@ -249,6 +301,12 @@ public class CommentPresenter {
                     });
         }
 
-        //callAPI
     }
+    public void showView()
+    {
+        addBtnVisibility.set(View.VISIBLE);
+        inputCommentVisibility.set(View.VISIBLE);
+        dividerVisibility.set(View.VISIBLE);
+    }
+    //callAPI
 }

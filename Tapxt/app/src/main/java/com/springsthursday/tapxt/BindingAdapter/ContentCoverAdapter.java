@@ -157,6 +157,13 @@ public class ContentCoverAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     listener.onItemClick(item);
                 }
             });
+
+            binding.commentCount.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    listener.onCommentClick(item);
+                }
+            });
         }
     }
 }

@@ -1,14 +1,24 @@
 package com.springsthursday.tapxt.view;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
+import com.springsthursday.tapxt.BindingAdapter.CommentAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.CommentContract;
 import com.springsthursday.tapxt.databinding.ActivityCommentBinding;
@@ -23,9 +33,13 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
     private Toolbar toolbar;
     private String episodeID;
     private final int EDIT_COMMENT_REQUEST_CODE = 1;
+    private Dialog dialog = null;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.titlebar, null));
+
         this.setContentView(R.layout.activity_comment);
 
         Intent intent = getIntent();
@@ -53,8 +67,9 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
 
-        viewModel.loadData();
+        viewModel.loadCommentList();
     }
 
 
@@ -89,9 +104,41 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
                 String comment = resultIntent.getStringExtra("Comment");
                 String commentID = resultIntent.getStringExtra("CommentID");
 
-                CommentRepository.getInstance().updateComment(comment, commentID);
+                ((CommentAdapter)binding.recyclerView.getAdapter()).updateComment(comment, commentID);
                 binding.recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
+    }
+    @Override
+    public void showProgressDialog(String loadingMessage) {
+
+        if(dialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = getLayoutInflater().inflate(R.layout.dialog_progressbar, null);
+            ((TextView)view.findViewById(R.id.loadingMessage)).setText(loadingMessage);
+            builder.setView(view);
+            dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgressDialog() {
+        if(dialog != null) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
+
+    public void hideKeybord() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(getApplication().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(binding.inputComment.getWindowToken(), 0);
     }
 }

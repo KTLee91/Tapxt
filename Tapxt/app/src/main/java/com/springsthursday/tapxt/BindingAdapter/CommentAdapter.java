@@ -1,11 +1,17 @@
 package com.springsthursday.tapxt.BindingAdapter;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.springsthursday.tapxt.R;
@@ -19,10 +25,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public ArrayList<CommentItem> items;
     private CommentClickListener listener;
+    private Context context;
 
-    public CommentAdapter(CommentClickListener listener)
+    public CommentAdapter(CommentClickListener listener, Context context)
     {
         this.listener = listener;
+        this.context = context;
     }
 
     @NonNull
@@ -42,15 +50,26 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((CommentViewHolder) holder).binding.update.setVisibility(View.GONE);
             ((CommentViewHolder) holder).binding.delete.setVisibility(View.GONE);
         }
+        else
+        {
+
+            Drawable drawable =  context.getResources().getDrawable(R.drawable.rectangle_white, null);
+            drawable.setColorFilter(context.getResources().getColor(R.color.defaulitViolet, null), PorterDuff.Mode.SRC_IN);
+
+            ((CommentViewHolder) holder).binding.comment.setBackground(drawable);
+        }
 
         if(item.isClapsMe())
-            ((CommentViewHolder) holder).binding.claps.setAnimation("like_red.json");
+        {
+            ((CommentViewHolder) holder).binding.clapsCount.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.left_like_red, null),null,null,null);
+            //Red로 변경
+        }
 
-        ((CommentViewHolder) holder).bindClickListener(item, ((CommentViewHolder) holder).binding.claps);
+        ((CommentViewHolder) holder).bindClickListener(item, ((CommentViewHolder) holder).binding.clapsCount);
 
         ((CommentViewHolder) holder).binding.setCommentItem(item);
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -66,13 +85,26 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void addItem(CommentItem item)
     {
         this.items.add(item);
-        notifyDataSetChanged();
+        notifyItemInserted(items.size()-1);
     }
 
     public void removeItem(CommentItem item)
     {
+        int position = this.items.indexOf(item);
         this.items.remove(item);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
+    }
+
+    public void updateComment(String comment, String commentID)
+    {
+        for(int i=0; i< items.size(); i++)
+        {
+            CommentItem item = items.get(i);
+            if(item.getId().equals(commentID)) {
+                item.setText(comment);
+                return;
+            }
+        }
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -83,7 +115,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding = DataBindingUtil.bind(itemView);
         }
 
-        public void bindClickListener(final CommentItem item, final LottieAnimationView lottie)
+        public void bindClickListener(final CommentItem item, final TextView claps)
         {
             binding.update.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,10 +131,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
 
-            binding.claps.setOnClickListener(new View.OnClickListener() {
+            binding.clapsCount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onLottieClickListener(item, lottie);
+                    listener.onClapsClickListener(item, claps);
                 }
             });
         }

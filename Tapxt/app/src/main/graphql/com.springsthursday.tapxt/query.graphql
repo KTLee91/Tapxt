@@ -176,6 +176,11 @@ query seeStory($title : String!){
             title
             sequence
             isLiked
+            likesCount
+            comments{
+                id
+            }
+            viewCount
             createdAt
         }
         characters {
@@ -269,6 +274,29 @@ query seeFeed{
       }
     }
   }
+}
+
+query seeComments($id : String!){
+    seeEpisode(id : $id)
+    {
+                comments{
+                    id
+                    text
+                    isSelf
+                    user{
+                        id
+                        avatar
+                        nickname
+                    }
+                    claps{
+                        user{
+                            id
+                            nickname
+                        }
+                    }
+                    clapsCount
+                }
+    }
 }
 
 

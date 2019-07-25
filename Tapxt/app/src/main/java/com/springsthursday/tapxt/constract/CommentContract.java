@@ -5,5 +5,8 @@ import com.springsthursday.tapxt.item.CommentItem;
 public interface CommentContract {
     interface View{
         void openCommentUpdateActivity(CommentItem item);
+        void showProgressDialog(String message);
+        void hideProgressDialog();
+        void hideKeybord();
     }
 }

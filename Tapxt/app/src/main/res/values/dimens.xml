@@ -9,6 +9,7 @@
 
     <!--public-->
     <dimen name="appbarTitleSize">24dp</dimen>
+    <dimen name="nickNameSize">12dp</dimen>
 
     <!--Login Activity -->
     <dimen name="loginLeftMargin">18dp</dimen>
@@ -16,10 +17,10 @@
     <dimen name="loginTopMargin">18dp</dimen>
 
     <!--loading Prgoress Dialog -->
-    <dimen name="loginDialogLayoutRightMargin">12dp</dimen>
-    <dimen name="loginDialogLayoutLeftMargin">12dp</dimen>
-    <dimen name="loginDialogLayoutTopMargin">6dp</dimen>
-    <dimen name="loginDialogLayoutBottomMargin">6dp</dimen>
+    <dimen name="loginDialogLayoutRightMargin">4dp</dimen>
+    <dimen name="loginDialogLayoutLeftMargin">4dp</dimen>
+    <dimen name="loginDialogLayoutTopMargin">2dp</dimen>
+    <dimen name="loginDialogLayoutBottomMargin">2dp</dimen>
     <dimen name="loginDialogContentLeftMargin">12dp</dimen>
     <dimen name="loadingMessageSize">20dp</dimen>
 
@@ -49,6 +50,23 @@
     <dimen name="ContentCoverContentLeft">12dp</dimen>
     <dimen name="ContentCoverContentTop">12dp</dimen>
     <dimen name="ContentCoverContentBottom">12dp</dimen>
+    <dimen name="ContentCoverContentRight">12dp</dimen>
 
     <dimen name="ContentCoverEpisodeCreateAt">12dp</dimen>
+
+    <dimen name="ContentCoverCountSize">15dp</dimen>
+
+
+    <!-- Comment Activity -->
+    <dimen name="CommentLayoutTop">18dp</dimen>
+    <dimen name="CommentLayoutLeft">12dp</dimen>
+    <dimen name="CommentLayoutRight">12dp</dimen>
+    <dimen name="CommentLayoutBottom">18dp</dimen>
+
+    <dimen name="CommentBetweenComment">12dp</dimen> <!--댓글과 댓글 사이의 간격-->
+    <dimen name="CommentAvatarBetweenNickName">12dp</dimen>
+    <dimen name="CommentLikeBetweenComment">3dp</dimen>
+    <dimen name="CommentDeleteBetweenUpdate">12dp</dimen>
+    <dimen name="CommentEditTextBetweenImage">12dp</dimen>
+    <dimen name="CommentTextSize">16dp</dimen>
 </resources>
