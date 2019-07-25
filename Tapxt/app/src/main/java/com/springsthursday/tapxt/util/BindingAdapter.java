@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.support.design.shape.RoundedCornerTreatment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +43,13 @@ public class BindingAdapter {
         {
             final ContentAdapter adapter = (ContentAdapter)recyclerView.getAdapter();
             adapter.setItems(items);
-            recyclerView.scrollToPosition(adapter.getItemCount()-1);
+            recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    recyclerView.scrollToPosition(adapter.getItemCount() -1);
+                    recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
         }
     }
 

@@ -24,9 +24,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.View {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 
-        Window window = getActivity().getWindow();
+        /*Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setNavigationBarColor(getActivity().getColor(R.color.background));*/
 
         setHasOptionsMenu(true);
         return DataBindingUtil.inflate(inflater,R.layout.fragment_profile, container, false).getRoot();

@@ -101,7 +101,7 @@ public class CommentPresenter {
                             Toast.makeText(context, dataResponse.errors().get(0).toString(), Toast.LENGTH_LONG).show();
                             return;
                         }
-
+                        showView();
                         loaderVisibility.set(View.GONE);
 
                         items.set(CommentRepository.getInstance().getCommentList(dataResponse));
@@ -163,8 +163,6 @@ public class CommentPresenter {
                             Toast.makeText(context, dataResponse.errors().get(0).toString(), Toast.LENGTH_LONG).show();
                             return;
                         }
-
-                        showView();
 
                         CommentItem commentItem = new CommentItem();
                         commentItem.setAvatar(UserInfo.getInstance().userInfoItem.getImageUrl());

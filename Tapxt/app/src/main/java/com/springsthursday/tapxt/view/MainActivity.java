@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //getWindow().setNavigationBarColor(getColor(R.color.background));
+
         setContentView(R.layout.activity_main);
 
         this.setUpView();
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setNavigationBarColor(getColor(R.color.background));
+
                 fragmentManager.beginTransaction().show(homeFragment).commit();
 
                 if(categoryFragment != null) fragmentManager.beginTransaction().hide(categoryFragment).commit();
@@ -83,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     fragmentManager.beginTransaction().add(R.id.frameLayout, categoryFragment).commit();
                 }
 
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().setNavigationBarColor(getColor(R.color.background));
+
                 fragmentManager.beginTransaction().show(categoryFragment).commit();
                 if(homeFragment != null) fragmentManager.beginTransaction().hide(homeFragment).commit();
                 if(profileFragment != null) fragmentManager.beginTransaction().hide(profileFragment).commit();
@@ -93,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     profileFragment = new ProfileFragment();
                     fragmentManager.beginTransaction().add(R.id.frameLayout, profileFragment).commit();
                 }
+
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().setNavigationBarColor(getColor(R.color.background));
 
                 fragmentManager.beginTransaction().show(profileFragment).commit();
                 if(homeFragment != null) fragmentManager.beginTransaction().hide(homeFragment).commit();

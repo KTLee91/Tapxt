@@ -9,10 +9,10 @@
         android:id="@+id/category"
         android:icon="@drawable/ic_orion_category"
         android:title="Category" />
-    <item
+    <!--<item
         android:id="@+id/search"
         android:icon="@drawable/ic_search_gray"
-        android:title="Category" />
+        android:title="Category" />-->
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_orion_user"

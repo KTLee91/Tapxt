@@ -256,7 +256,6 @@ public class HomePresenter {
     }
     //endregion
 
-
     //region Listener
     private final class SingleTapGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
@@ -286,7 +285,7 @@ public class HomePresenter {
             try
             {
                 int position = viewPager.getCurrentItem();
-                activity.openContentCover(adapter.get().getCurrentItem(position).getTitle());
+                activity.openContentCover(adapter.get().getCurrentItem(position).getId());
             }
             catch (Exception e )
             {}
@@ -298,7 +297,7 @@ public class HomePresenter {
     {
         @Override
         public void storyClick(StoryItem item) {
-            activity.openContentCover(item.getTitle());
+            activity.openContentCover(item.getStoryid());
         }
     }
     //endregion

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.springsthursday.tapxt.R;
 
 public class ImageBindingAdapter {
+
     @android.databinding.BindingAdapter("imageUrl")
     public static void loadImage(final ImageView imageView, final String imageUrl) {
         Glide.with(imageView.getContext())
@@ -31,5 +33,16 @@ public class ImageBindingAdapter {
             imageView.setImageResource(R.drawable.ic_new_comment_white);
         else
             imageView.setImageResource(R.drawable.ic_new_comment_darkerviolet);
+    }
+
+    @BindingAdapter({"contextCompleteText", "preComment"})
+    public static void contextCompleteText(final TextView textView, final String editComment, final String preComment) {
+
+        if(preComment.equals(editComment)) return;
+
+        if(editComment.isEmpty())
+            textView.setTextColor(textView.getContext().getColor(R.color.defaultGery));
+        else
+            textView.setTextColor(textView.getContext().getColor(R.color.defaultWhite));
     }
 }

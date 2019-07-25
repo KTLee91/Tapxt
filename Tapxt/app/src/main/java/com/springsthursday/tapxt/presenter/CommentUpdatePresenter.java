@@ -25,13 +25,12 @@ import io.reactivex.schedulers.Schedulers;
 public class CommentUpdatePresenter {
 
     public ObservableField<String> editComment;
-    public ObservableField<Integer> loaderVisibility;
+    public ObservableField<String> preComment;
 
     private Context context;
     private CommentItem item;
     private CompositeDisposable disposable;
     private CommentUpdateContract.View activity;
-    private LottieAnimationView lottie;
 
     public CommentUpdatePresenter(CommentUpdateContract.View activity ,Context context, CommentItem item)
     {
@@ -39,19 +38,15 @@ public class CommentUpdatePresenter {
         this.item = item;
         this.activity = activity;
 
+        preComment = new ObservableField<>(item.getText());
         editComment = new ObservableField<>(item.getText());
-        loaderVisibility = new ObservableField<>(View.GONE);
-    }
-
-    public void setLottie(LottieAnimationView lottie)
-    {
-        this.lottie = lottie;
     }
 
     public void editComment()
     {
-        loaderVisibility.set(View.VISIBLE);
-        lottie.playAnimation();
+        activity.hideKeybord();
+        if(editComment.get().isEmpty()) return;
+        activity.showProgressDialog("댓글 수정 중...");
 
         ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
@@ -83,9 +78,8 @@ public class CommentUpdatePresenter {
                             return;
                         }
 
-                        loaderVisibility.set(View.GONE);
+                        activity.hideProgressDialog();
                         activity.finishActivity(editComment.get(), item.getId());
-
                     }
 
                     @Override
@@ -94,5 +88,10 @@ public class CommentUpdatePresenter {
                     @Override
                     public void onComplete() {}
                 });
+    }
+
+    public void clickComplete(View view)
+    {
+        this.editComment();
     }
 }

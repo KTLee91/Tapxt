@@ -160,8 +160,8 @@ query seeEpisode($id : String!)
     }
 }
 
-query seeStory($title : String!){
-    seeStory(title : $title)
+query seeStory($id : String!){
+    seeStory(id : $id)
     {
         title
         description

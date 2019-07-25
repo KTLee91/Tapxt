@@ -38,6 +38,7 @@ public class MainRepository {
                 StoryItem item = new StoryItem();
                 SeeFeedQuery.Story story = feed.stories().get(k);
 
+                item.setStoryid(story.id());
                 item.setFeedTag(tag);
                 item.setTitle(story.title());
                 item.setDescription(story.description());

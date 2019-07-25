@@ -1,5 +1,6 @@
 package com.springsthursday.tapxt.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -30,8 +32,8 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setNavigationBarColor(getColor(R.color.background));
 
         this.setContentView(R.layout.activity_content);
 
@@ -63,7 +65,10 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left_darkerviolet);
 
+        binding.recyclerView.setHasFixedSize(true);
+
         LinearLayoutManager manager = new LinearLayoutManager(this);
+
         binding.recyclerView.setLayoutManager(manager);
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator(){
             @Override
@@ -71,7 +76,6 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
                 return false;
             }
         });
-
         viewModel.inqueryContent();
     }
 

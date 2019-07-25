@@ -47,10 +47,10 @@ public class ContentCoverPresenter {
     private ContentCoverContract.View activity;
     private LottieAnimationView loderLottie;
     private CompositeDisposable disposable;
-    private String storyTitle;
+    private String storyID;
     private Context context;
 
-    public ContentCoverPresenter(ContentCoverContract.View activity, String storyTitle, Context context)
+    public ContentCoverPresenter(ContentCoverContract.View activity, String storyID, Context context)
     {
         this.activity = activity;
         this.context = context;
@@ -63,7 +63,7 @@ public class ContentCoverPresenter {
         loderVisibility = new ObservableField<>(View.VISIBLE);
         appbarTitle = new ObservableField<>();
 
-        this.storyTitle = storyTitle;
+        this.storyID = storyID;
 
     }
 
@@ -79,7 +79,7 @@ public class ContentCoverPresenter {
 
         ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
-        SeeStoryQuery query = SeeStoryQuery.builder().title(storyTitle).build();
+        SeeStoryQuery query = SeeStoryQuery.builder().id(storyID).build();
         ApolloCall<SeeStoryQuery.Data> apolloCall1 = apolloClienmt.query(query);
         Observable<Response<SeeStoryQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
 

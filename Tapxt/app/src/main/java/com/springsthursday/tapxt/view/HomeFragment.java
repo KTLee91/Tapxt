@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         Window window = getActivity().getWindow();
 
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setNavigationBarColor(getActivity().getColor(R.color.background));
 
         viewModel = new HomePresenter(this, getActivity().getApplicationContext());
 
@@ -114,9 +115,9 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     }
 
     @Override
-    public void openContentCover(String storyTitle) {
+    public void openContentCover(String id) {
         Intent intent = new Intent(getActivity(), ContentCoverActivity.class);
-        intent.putExtra("Story", storyTitle);
+        intent.putExtra("Story", id);
         getActivity().startActivity(intent);
     }
 

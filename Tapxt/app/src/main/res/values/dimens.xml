@@ -9,7 +9,9 @@
 
     <!--public-->
     <dimen name="appbarTitleSize">24dp</dimen>
+    <dimen name="appbarMenuSize">18dp</dimen>
     <dimen name="nickNameSize">12dp</dimen>
+    <dimen name="appbarMenuRight">12dp</dimen>
 
     <!--Login Activity -->
     <dimen name="loginLeftMargin">18dp</dimen>

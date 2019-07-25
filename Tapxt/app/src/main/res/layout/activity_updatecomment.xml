@@ -1,50 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
+
         <variable
             name="viewModel"
             type="com.springsthursday.tapxt.presenter.CommentUpdatePresenter" />
     </data>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#8930E8"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:visibility="@{viewModel.loaderVisibility}"
-        app:lottie_fileName = "loader.json"
-        app:lottie_loop="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/titlebar"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/chatbubble"
-        android:inputType="textMultiLine|textPersonName"
-        android:ems="10"
-        android:text= "@={viewModel.editComment}"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        />
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="댓글 수정"
+                android:textColor="@color/defaultWhite"
+                android:textSize="@dimen/appbarTitleSize" />
+
+            <TextView
+                android:id="@+id/complete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:fontFamily="@font/nanumsquareregular"
+                android:text="완료"
+                android:onClick="@{viewModel.clickComplete}"
+                preComment="@{viewModel.preComment}"
+                contextCompleteText = "@{viewModel.editComment}"
+                android:layout_marginRight="@dimen/appbarMenuRight"
+                android:textColor="@color/defaultGery"
+                android:textSize="@dimen/appbarMenuSize" />
+        </android.support.v7.widget.Toolbar>
+
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/CommentLayoutLeft"
+            android:layout_marginTop="@dimen/CommentLayoutTop"
+            android:layout_marginRight="@dimen/CommentLayoutRight"
+            android:background="@drawable/comment_mx"
+            android:ems="10"
+            android:inputType="textMultiLine|textPersonName"
+            android:text="@={viewModel.editComment}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+    </android.support.constraint.ConstraintLayout>
 </layout>

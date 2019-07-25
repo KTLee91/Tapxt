@@ -32,8 +32,8 @@ public class VerificationActivity extends AppCompatActivity implements Verificat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setNavigationBarColor(getColor(R.color.background));
 
         setContentView(R.layout.activity_verification);
 

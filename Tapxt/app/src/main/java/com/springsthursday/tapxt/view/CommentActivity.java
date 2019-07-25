@@ -39,6 +39,7 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
         super.onCreate(savedInstanceState);
 
         getWindow().setStatusBarColor(getResources().getColor(R.color.titlebar, null));
+        getWindow().setNavigationBarColor(getColor(R.color.background));
 
         this.setContentView(R.layout.activity_comment);
 

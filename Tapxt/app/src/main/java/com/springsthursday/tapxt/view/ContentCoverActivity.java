@@ -23,28 +23,28 @@ public class ContentCoverActivity extends AppCompatActivity implements ContentCo
 
     private Toolbar toolbar;
     private ContentCoverPresenter viewModel;
-    private String storyTitle;
+    private String storyID;
     private ActivityContentcoverBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setNavigationBarColor(getColor(R.color.background));
 
         this.setContentView(R.layout.activity_contentcover);
 
         Intent intent = getIntent();
 
-        storyTitle  = intent.getStringExtra("Story");
+        storyID  = intent.getStringExtra("Story");
 
         this.setUpView();
     }
 
     public void setUpView()
     {
-        viewModel = new ContentCoverPresenter(this, storyTitle, getApplication());
+        viewModel = new ContentCoverPresenter(this, storyID, getApplication());
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_contentcover);
         binding.setViewModel(viewModel);
