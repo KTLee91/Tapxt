@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -332,9 +333,21 @@ public class ContentPresenter {
 
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
+                    View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                    View exactView = null;
 
+                    if(childView != null)
+                        exactView = findExactChild(childView, e.getX(), e.getY());
+
+                    if(exactView != null)
+                    {
+                        if(exactView.getId() == R.id.btn)
+                        {
+                            return false;
+                        }
+                    }
                     clickListener.onClick();
-                    return false;
+                    return true;
                 }
 
                 @Override
@@ -360,6 +373,30 @@ public class ContentPresenter {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+
+    public static View findExactChild(View childView, float x, float y){
+        if(!(childView instanceof ViewGroup)) return childView;
+        ViewGroup group = (ViewGroup) childView;
+        final int count = group.getChildCount();
+        for (int i = count - 1; i >= 0; i--) {
+            final View child = group.getChildAt(i);
+
+            final float translationX = child.getTranslationX();
+            final float translationY = child.getTranslationY();
+
+            final float width = child.getWidth();
+            final float height = child.getHeight();
+
+            if (x >= child.getX() + translationX&&
+                    x <= child.getX() + child.getWidth() + 10 + translationX &&
+                    y >= child.getY() + translationY &&
+                    y <= child.getY()+ child.getHeight() + 10 +translationY) {
+                return child;
+            }
+
+        }
+        return null;
     }
 
     public class RecyclerViewTouchListener implements ClickListener {
@@ -394,7 +431,7 @@ public class ContentPresenter {
     public class ContextPreSceneClickListener implements ContentListener{
         @Override
         public void preSceneClick() {
-            Log.d("클릭했엉","클릭했엉");
+            Log.d("클릭했엉올레","클릭했엉");
         }
     }
     //endregion

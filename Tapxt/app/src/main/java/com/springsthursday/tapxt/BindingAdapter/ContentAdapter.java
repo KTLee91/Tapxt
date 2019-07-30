@@ -113,7 +113,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if(holder instanceof PreSceneViewHolder)
         {
-           ((PreSceneViewHolder) holder).addListener();
+            ((PreSceneViewHolder) holder).addListener();
         }
         else if(holder instanceof ContentViewHolder) {
             if(item.getContentType() == Code.ContentType.LEFT_SERIES_CONTENT)
@@ -198,14 +198,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public long getItemId(int position)
     {
-       return contentItems.get(position).getContentSequence();
+        return contentItems.get(position).getContentSequence();
     }
 
     public void setItems(ArrayList<ContentItem> items)
     {
         this.contentItems = items;
 
-       if(contentItems.size() > 0)
+        if(contentItems.size() > 0)
             notifyItemInserted(contentItems.size() - 1);
         else
             notifyDataSetChanged();
@@ -236,17 +236,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             btn = itemView.findViewById(R.id.btn);
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         public void addListener()
         {
-            btn.setOnTouchListener(new View.OnTouchListener() {
+            btn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Log.d("우케케케케","우케케케케");
-                    return true;
+                public void onClick(View v) {
+                    listener.preSceneClick();
                 }
-
-
             });
         }
     }
