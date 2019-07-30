@@ -143,6 +143,16 @@ public class ContentCoverPresenter {
         @Override
         public void onItemClick(EpisodeItem item)
         {
+            int nextsequence = item.getSequence()+1;
+            String nextEpisodeID = "";
+
+            for(int i=0; i<items.get().getEpisodeCount(); i++)
+            {
+                if(nextsequence == items.get().getEpisodeList().get(i).getSequence())
+                    nextEpisodeID = items.get().getEpisodeList().get(i).getEpidoseId();
+            }
+
+
            activity.openContentActivity(item.getEpidoseId());
         }
 

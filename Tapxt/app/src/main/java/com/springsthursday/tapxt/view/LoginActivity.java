@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onCreate(savedInstanceState);
 
         Window window = getWindow();
+        getWindow().setNavigationBarColor(getColor(R.color.background));
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.activity_login);

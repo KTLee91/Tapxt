@@ -106,7 +106,6 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
                 String commentID = resultIntent.getStringExtra("CommentID");
 
                 ((CommentAdapter)binding.recyclerView.getAdapter()).updateComment(comment, commentID);
-                binding.recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
     }
@@ -118,6 +117,7 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
             View view = getLayoutInflater().inflate(R.layout.dialog_progressbar, null);
             ((TextView)view.findViewById(R.id.loadingMessage)).setText(loadingMessage);
             builder.setView(view);
+
             dialog = builder.create();
             dialog.setCancelable(false);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

@@ -15,5 +15,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:lottie_fileName="intro.json"
         scaleType="centerCrop" />
+
 </android.support.constraint.ConstraintLayout>
 

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.springsthursday.tapxt.presenter.ContentPresenter" />
+    </data>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        imageUrl = "@{viewModel.avatar}"
+        android:layout_marginTop="@dimen/EpisodeDialogLayoutTop"
+        android:layout_marginLeft="@dimen/EpisodeDialogLayoutLeft"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/nickName"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text ="@{viewModel.nickName}"
+        android:textSize="@dimen/EpisodeDilaogNickNameSize"
+        android:textColor="@color/defaultWhite"
+        android:fontFamily="@font/nanumsquareregular"
+        android:layout_marginLeft="@dimen/EpisodeDialogContentLeft"
+        android:layout_marginTop="@dimen/EpisodeDialogLayoutTopForNickName"
+        app:layout_constraintLeft_toRightOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/ic_close"
+        android:layout_marginRight="@dimen/EpisodeDialogCloskRight"
+        android:layout_marginTop="@dimen/EpisodeDialogCloskTop"
+        android:onClick="@{viewModel.close}"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="@dimen/EpisodeDialogLayoutLeft"
+        android:layout_marginTop="@dimen/EpisodeDialogContentTop"
+        android:layout_marginRight="@dimen/EpisodeDialogLayoutRight"
+        bind_background_round = "@{viewModel.cover}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatar"
+        app:srcCompat="@mipmap/ic_launcher" />
+    <TextView
+        android:id="@+id/episodeList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/EpisodeDialogLayoutLeft"
+        android:layout_marginBottom="@dimen/EpisodeDialogContentBottom"
+        android:layout_marginTop="@dimen/EpisodeDialogContentTop"
+        android:text="목록"
+        android:drawableLeft="@drawable/left_list"
+        android:drawablePadding="8dp"
+        android:onClick="@{viewModel.showEpisodeList}"
+        android:textColor="@color/defaultWhite"
+        android:textSize="@dimen/EpisodeDialogTextSize"
+        android:fontFamily="@font/nanumsquareregular"
+        app:layout_goneMarginBottom="@dimen/EpisodeDialogLayoutBottom"
+        app:layout_constraintTop_toBottomOf="@id/cover"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nextBtn"/>
+    <TextView
+        android:id="@+id/commentList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/EpisodeDialoglistBetweenComment"
+        android:text="댓글"
+        android:onClick="@{viewModel.showCommentList}"
+        android:drawableLeft="@drawable/left_comment_white"
+        android:textColor="@color/defaultWhite"
+        android:textSize="@dimen/EpisodeDialogTextSize"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/nanumsquareregular"
+        app:layout_constraintLeft_toRightOf="@id/episodeList"
+        app:layout_constraintTop_toTopOf="@id/episodeList"/>
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/EpisodeDialogLayoutLeft"
+        android:layout_marginRight="@dimen/EpisodeDialogLayoutRight"
+        android:layout_marginBottom="@dimen/EpisodeDialogLayoutBottom"
+        android:text="다음화 보기"
+        android:textColor="@color/defaultWhite"
+        android:fontFamily="@font/nanumsquarebold"
+        android:background="@drawable/loginbutton"
+        android:onClick="@{viewModel.nextBtn}"
+        android:visibility="@{viewModel.nextBtnVisibility}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</android.support.constraint.ConstraintLayout>
+</layout>

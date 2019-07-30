@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/comments"
-        android:icon="@drawable/ic_comments_darkerviolet"
+        android:icon="@drawable/ic_comment_white"
         android:title="item"
         app:showAsAction="always" />
     </menu>

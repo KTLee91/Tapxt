@@ -102,6 +102,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             CommentItem item = items.get(i);
             if(item.getId().equals(commentID)) {
                 item.setText(comment);
+                notifyItemChanged(i);
                 return;
             }
         }

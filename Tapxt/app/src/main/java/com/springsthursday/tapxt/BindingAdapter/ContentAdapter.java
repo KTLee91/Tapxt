@@ -1,14 +1,18 @@
 package com.springsthursday.tapxt.BindingAdapter;
 
+import android.annotation.SuppressLint;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.springsthursday.tapxt.Code.Code;
@@ -20,19 +24,31 @@ import com.springsthursday.tapxt.databinding.RecyclerviewContentRightBinding;
 import com.springsthursday.tapxt.databinding.RecyclerviewLeftImageBinding;
 import com.springsthursday.tapxt.databinding.RecyclerviewRightImageBinding;
 import com.springsthursday.tapxt.item.ContentItem;
+import com.springsthursday.tapxt.listener.ContentListener;
 
 import java.util.ArrayList;
 
 public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public ArrayList<ContentItem> contentItems;
+    public ArrayList<ContentItem> contentItems = new ArrayList<>();
+    private ContentListener listener;
+
+    public ContentAdapter(ContentListener listener)
+    {
+        this.listener = listener;
+    }
 
     //region onCreatrViewHolder Method
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        if(viewType == Code.ContentType.LEFT_FIRST_CONTENT) {
+        if(viewType == Code.ContentType.CONTEXT_PRE_SCENE)
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_prescene, parent, false);
+            return new PreSceneViewHolder(view);
+        }
+        else if(viewType == Code.ContentType.LEFT_FIRST_CONTENT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_content, parent, false);
             return new ContentViewHolder(view);
         }
@@ -95,7 +111,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     {
         ContentItem item = contentItems.get(holder.getAdapterPosition());
 
-        if(holder instanceof ContentViewHolder) {
+        if(holder instanceof PreSceneViewHolder)
+        {
+           ((PreSceneViewHolder) holder).addListener();
+        }
+        else if(holder instanceof ContentViewHolder) {
             if(item.getContentType() == Code.ContentType.LEFT_SERIES_CONTENT)
             {
                 ((ContentViewHolder) holder).binding.imageView3.setVisibility(View.GONE);
@@ -162,31 +182,35 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((CenterImageViewHolder) holder).binding.setContentItem(item);
         }
         else
+        {
             return;
+        }
     }
 
     @Override
     public int getItemCount()
     {
-        if(contentItems != null) return contentItems.size();
-        else return 0;
+        if(contentItems == null) return 0;
+
+        return contentItems.size();
     }
 
     @Override
     public long getItemId(int position)
     {
-        return contentItems.get(position).getContentSequence();
+       return contentItems.get(position).getContentSequence();
     }
 
     public void setItems(ArrayList<ContentItem> items)
     {
         this.contentItems = items;
 
-        if(contentItems.size() > 0)
+       if(contentItems.size() > 0)
             notifyItemInserted(contentItems.size() - 1);
         else
             notifyDataSetChanged();
     }
+
 
     public ArrayList<ContentItem> getItems()
     {
@@ -202,6 +226,31 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     //region ViewHolder Class
+
+    public class PreSceneViewHolder extends RecyclerView.ViewHolder
+    {
+        protected  Button btn;
+
+        public PreSceneViewHolder(@NonNull View itemView) {
+            super(itemView);
+            btn = itemView.findViewById(R.id.btn);
+        }
+
+        @SuppressLint("ClickableViewAccessibility")
+        public void addListener()
+        {
+            btn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Log.d("우케케케케","우케케케케");
+                    return true;
+                }
+
+
+            });
+        }
+    }
+
     public class ContentViewHolder extends RecyclerView.ViewHolder
     {
         private RecyclerviewContentBinding binding;
@@ -236,12 +285,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class DummyViewHolder extends RecyclerView.ViewHolder
     {
-        private View view;
-
         public DummyViewHolder(@NonNull View itemView)
         {
             super(itemView);
-            view = itemView.findViewById(R.id.dummyView);
         }
     }
     public class LeftImageViewHolder extends RecyclerView.ViewHolder

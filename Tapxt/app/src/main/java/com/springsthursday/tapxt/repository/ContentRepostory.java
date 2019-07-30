@@ -12,6 +12,7 @@ public class ContentRepostory {
 
     private static ContentRepostory contentRepostory = null;
     private ContentItem dummyContent;
+    private ContentItem contextPreSceneTypeItem;
     public String episodeId;
     public String episodeTitle;
     public String storyTitle;
@@ -28,10 +29,17 @@ public class ContentRepostory {
 
     public ContentRepostory()
     {
-        ContentItem item = new ContentItem();
-        item.setContentSequence(999999);
-        item.setContentType(Code.ContentType.DUMMY_CONTENT);
-        dummyContent = item;
+        ContentItem dummyitem = new ContentItem();
+        ContentItem contextSceneItem = new ContentItem();
+
+        dummyitem.setContentSequence(999999);
+        dummyitem.setContentType(Code.ContentType.DUMMY_CONTENT);
+
+        contextSceneItem.setContentType(Code.ContentType.CONTEXT_PRE_SCENE);
+        contextSceneItem.setContentSequence(-1);
+
+        dummyContent = dummyitem;
+        contextPreSceneTypeItem = contextSceneItem;
     }
 
     public ArrayList<ContentItem> LoadContentList(Response<SeeEpisodeQuery.Data> dataResponse)
@@ -66,7 +74,7 @@ public class ContentRepostory {
                 item.setSceneID(scene.id());
                 item.setSceneTitle(scene.title());
                 item.setSceneSequence(scene.sequence());
-                item.setSceneBackground(scene.sceneProperty().background());
+               // item.setSceneBackground(scene.sceneProperty().background());
 
                 item.setAvatar(content.character().avatar());
                 item.setName(content.character().name());
@@ -101,4 +109,9 @@ public class ContentRepostory {
     }
 
     public ContentItem getDummyContent() { return dummyContent;}
+
+    public ContentItem getContextPreSceneType()
+    {
+        return contextPreSceneTypeItem;
+    }
 }

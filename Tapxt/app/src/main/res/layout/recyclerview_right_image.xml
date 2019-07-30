@@ -19,7 +19,7 @@
             imageUrl="@{contentItem.avatar}"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
+            android:background="#EC0F0F"
             android:scaleType="fitXY"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

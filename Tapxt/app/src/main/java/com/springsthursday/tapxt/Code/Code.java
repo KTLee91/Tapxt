@@ -11,6 +11,7 @@ public class Code {
 
     public class ContentType
     {
+        public static final int CONTEXT_PRE_SCENE = 0;
         public static final int LEFT_FIRST_CONTENT = 1;
         public static final int RIGHT_FIRST_CONTENT = 2;
         public static final int LEFT_SERIES_CONTENT = 3;

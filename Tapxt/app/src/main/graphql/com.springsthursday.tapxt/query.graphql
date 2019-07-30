@@ -104,7 +104,12 @@ query seeEpisode($id : String!)
             nickname
         }
         story{
+            episodes{
+                id
+                sequence
+            }
             title
+            cover
         }
         title
         sequence
@@ -116,9 +121,6 @@ query seeEpisode($id : String!)
             id
             title
             sequence
-            sceneProperty{
-                background
-            }
             contents{
                 contentType{
                     type

@@ -71,4 +71,23 @@
     <dimen name="CommentDeleteBetweenUpdate">12dp</dimen>
     <dimen name="CommentEditTextBetweenImage">12dp</dimen>
     <dimen name="CommentTextSize">16dp</dimen>
+
+    <!-- Episode Dialog -->
+    <dimen name="EpisodeDialogTextSize">12dp</dimen>
+    <dimen name="EpisodeDilaogNickNameSize">15dp</dimen>
+
+    <dimen name="EpisodeDialogCloskTop">3dp</dimen>
+    <dimen name="EpisodeDialogCloskRight">6dp</dimen>
+
+    <dimen name="EpisodeDialogLayoutLeft">12dp</dimen>
+    <dimen name="EpisodeDialogLayoutTop">12dp</dimen>
+    <dimen name="EpisodeDialogLayoutBottom">12dp</dimen>
+    <dimen name="EpisodeDialogLayoutRight">12dp</dimen>
+
+    <dimen name="EpisodeDialogLayoutTopForNickName">18dp</dimen>
+
+    <dimen name="EpisodeDialogContentTop">12dp</dimen>
+    <dimen name="EpisodeDialogContentLeft">12dp</dimen>
+    <dimen name="EpisodeDialogContentBottom">12dp</dimen>
+    <dimen name="EpisodeDialoglistBetweenComment">18dp</dimen>
 </resources>

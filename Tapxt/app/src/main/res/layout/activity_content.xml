@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.springsthursday.tapxt.presenter.ContentPresenter" />
@@ -13,22 +12,14 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         tools:context="com.springsthursday.tapxt.view.ContentActivity"
         tools:ignore="ExtraText">
-
-        <ImageView
-            android:id="@+id/imageView"
-            bind_background="@{viewModel.background}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:srcCompat="?attr/colorBackgroundFloating" />
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             app:expanded="false">
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -44,9 +35,8 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="#494949"
-                    android:theme="?attr/actionBarTheme"
-                    app:layout_scrollFlags="scroll|enterAlways|snap">
+                    android:background="@color/titlebar"
+                    app:layout_scrollFlags="scroll|enterAlways">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -81,20 +71,32 @@
                                 android:textSize="15dp" />
                         </LinearLayout>
 
-                        <com.airbnb.lottie.LottieAnimationView
+                        <ToggleButton
                             android:id="@+id/like"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:onClick="@{viewModel.lottieClickListener}"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toRightOf="@id/titlelayout"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="@dimen/ContentCoverContentLeft"
+                            android:layout_marginRight="6dp"
+                            android:background="@drawable/ic_unselectedheart"
+                            android:onClick="@{viewModel.likeClickListener}"
+                            android:textOff=""
+                            android:textOn=""
+                            app:layout_constraintBottom_toBottomOf="@id/titlelayout"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:lottie_fileName="like_gray.json" />
+                            app:layout_constraintTop_toTopOf="@id/titlelayout" />
+
                     </android.support.constraint.ConstraintLayout>
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
+
+
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
+            bind_background_switcher="@{viewModel.background}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation_view"
@@ -113,6 +115,5 @@
             android:layout_height="match_parent"
             android:background="#00FF0000"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
     </android.support.design.widget.CoordinatorLayout>
 </layout>

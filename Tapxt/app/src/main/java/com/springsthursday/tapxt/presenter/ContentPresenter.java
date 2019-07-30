@@ -1,13 +1,19 @@
 package com.springsthursday.tapxt.presenter;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.DrawerLayout;
@@ -15,13 +21,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+import android.widget.ViewFlipper;
 import android.widget.ViewSwitcher;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -30,12 +41,22 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.TransitionOptions;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.bumptech.glide.request.transition.Transition;
+import com.springsthursday.tapxt.Code.Code;
 import com.springsthursday.tapxt.SeeEpisodeQuery;
 import com.springsthursday.tapxt.ToggleEpisodeLikeMutation;
 import com.springsthursday.tapxt.ToggleFollowMutation;
 import com.springsthursday.tapxt.BindingAdapter.ContentAdapter;
 import com.springsthursday.tapxt.R;
+import com.springsthursday.tapxt.constract.ContentContract;
 import com.springsthursday.tapxt.item.ContentItem;
+import com.springsthursday.tapxt.listener.ContentListener;
 import com.springsthursday.tapxt.repository.CommentRepository;
 import com.springsthursday.tapxt.repository.ContentRepostory;
 import com.springsthursday.tapxt.util.ApolloClientObject;
@@ -68,26 +89,36 @@ public class ContentPresenter {
     public ObservableField<String> episodeTitle;
     public ObservableField<Boolean> appbarExpanded;
 
+    public ObservableField<String> cover;
+    public ObservableField<String> avatar;
+    public ObservableField<String> nickName;
+    public ObservableField<Integer> nextBtnVisibility;
+
+    //region General Field
     private ArrayList<ContentItem> contentList;
+    private ContentContract.View activity;
     private int contentsequence = 0;
     private int indexContentOfScene = 0;
-    private CompositeDisposable disposable;
+    public CompositeDisposable disposable;
     private RecyclerView recyclerView;
     private Context context;
     private Timer timer;
     private boolean isAutoLoadContent = false;
     private boolean isLiked = false;
     private String contentID;
-    private AppBarLayout appbar;
-    private ImageView imageView;
-    private LottieAnimationView lottie;
+    private ViewFlipper flipper;
+    private ToggleButton likeToggle;
     private LottieAnimationView loderLottie;
-    private String episodeID ="";
+    private String episodeID = "";
+    private AppBarLayout appbar;
+    private String nextEpisodeID="";
+    private boolean flag = false;
+    //endregion
 
-    public ContentPresenter(Context context, String contentID)
-    {
+    public ContentPresenter(Context context,ContentContract.View view ,String contentID) {
         this.context = context;
         this.contentID = contentID;
+        activity = view;
 
         contentList = new ArrayList<>();
         loderVisibility = new ObservableInt(View.GONE);
@@ -97,31 +128,36 @@ public class ContentPresenter {
         storyTitle = new ObservableField<>();
         episodeTitle = new ObservableField<>();
         appbarExpanded = new ObservableField<>(false);
+        cover = new ObservableField<>();
+        avatar = new ObservableField<>();
+        nickName = new ObservableField<>();
+        nextBtnVisibility = new ObservableField<>(View.VISIBLE);
 
-        adapter.set(new ContentAdapter());
+        adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
         adapter.get().setHasStableIds(true);
     }
 
-    public void setRecyclerView(RecyclerView recyclerView)
-    {
+    public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 
-    public void setAppBar(AppBarLayout appBar) {
-        this.appbar = appBar;
+    public void setViewFlipper(ViewFlipper flipper) {
+        this.flipper = flipper;
     }
 
-    public void setImageView(ImageView imageView)
-    {
-        this.imageView = imageView;
+    public void setLikeToggle(ToggleButton like) {
+        this.likeToggle = like;
     }
 
-    public void setLottie(LottieAnimationView lottie) {this.lottie = lottie;}
+    public void setLoderLottie(LottieAnimationView lottie) {
+        this.loderLottie = lottie;
+    }
 
-    public void setLoderLottie(LottieAnimationView lottie) {this.loderLottie = lottie;}
+    public void setAppbar(AppBarLayout appbar) {
+        this.appbar = appbar;
+    }
 
-    public void inqueryContent()
-    {
+    public void inqueryContent() {
         loderVisibility.set(View.VISIBLE);
         loderLottie.playAnimation();
 
@@ -134,103 +170,139 @@ public class ContentPresenter {
         disposable = new CompositeDisposable();
 
         observable.subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Response<SeeEpisodeQuery.Data>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                  disposable.add(d);
-            }
-            @Override
-            public void onNext(Response<SeeEpisodeQuery.Data> dataResponse) {
-                if (dataResponse == null) {
-                    showExceptionErrorMessage();
-                    loderVisibility.set(View.GONE);
-                    return;
-                }
-                if (dataResponse.errors().size() > 0) {
-                    showResponseServerErrorMessage(dataResponse.errors().get(0).toString());
-                    loderVisibility.set(View.GONE);
-                    return;
-                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<SeeEpisodeQuery.Data>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
 
-                storyTitle.set(dataResponse.data().seeEpisode().story().title());
-                episodeTitle.set(dataResponse.data().seeEpisode().title());
-                isLiked = dataResponse.data().seeEpisode().isLiked();
-                episodeID = dataResponse.data().seeEpisode().id();
-                contentList = ContentRepostory.getInstance().LoadContentList(dataResponse);
+                    @Override
+                    public void onNext(Response<SeeEpisodeQuery.Data> dataResponse) {
+                        if (dataResponse == null) {
+                            showExceptionErrorMessage();
+                            loderVisibility.set(View.GONE);
+                            return;
+                        }
+                        if (dataResponse.errors().size() > 0) {
+                            showResponseServerErrorMessage(dataResponse.errors().get(0).toString());
+                            loderVisibility.set(View.GONE);
+                            return;
+                        }
 
-                recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerViewTouchListener()));
+                        storyTitle.set(dataResponse.data().seeEpisode().story().title());
+                        episodeTitle.set(dataResponse.data().seeEpisode().title());
+                        isLiked = dataResponse.data().seeEpisode().isLiked();
+                        episodeID = dataResponse.data().seeEpisode().id();
+                        int nextSequence = dataResponse.data().seeEpisode().sequence() + 1;
 
-                if(isLiked == true)
-                    lottie.setAnimation("like_red.json");
+                        avatar.set(dataResponse.data().seeEpisode().creator().avatar());
+                        nickName.set(dataResponse.data().seeEpisode().creator().nickname());
+                        cover.set(dataResponse.data().seeEpisode().story().cover());
 
-                loadContent();
+                        for(int j=0; j < dataResponse.data().seeEpisode().story().episodes().size(); j++)
+                        {
+                            if(nextSequence == dataResponse.data().seeEpisode().story().episodes().get(j).sequence())
+                                nextEpisodeID = dataResponse.data().seeEpisode().story().episodes().get(j).id();
+                        }
 
-                loderVisibility.set(View.GONE);
-            }
+                        contentList = ContentRepostory.getInstance().LoadContentList(dataResponse);
 
-            @Override
-            public void onError(Throwable e) {
-                Log.d("error", e.toString());
-            }
+                        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerViewTouchListener()));
 
-            @Override
-            public void onComplete() {
-            }
-        });
+                        if (isLiked == true)
+                            likeToggle.setBackground(context.getDrawable(R.drawable.ic_selectdheart));
+
+                        loadContent();
+                        loderVisibility.set(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("error", e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     //region show Error Message
-    public void showExceptionErrorMessage()
-    {
+    public void showExceptionErrorMessage() {
         Toast.makeText(context.getApplicationContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
     }
 
-    public void showResponseServerErrorMessage(String message)
-    {
+    public void showResponseServerErrorMessage(String message) {
         Toast.makeText(context.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
     //endregion
 
     //region load Content Methods
-    public void contextScene(final ContentItem item){
+    public void contextScene(final ContentItem item) {
 
-        adapter.set(new ContentAdapter());
-
+        adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
         bindingContentList.clear();
-        indexContentOfScene = 0;
-        bindingContentList.add(0,ContentRepostory.getInstance().getDummyContent());
-        background.set(item.getSceneBackground());
-       // Glide.with(context).load(item.getSceneBackground()).crossFade(5000).animate(android.R.anim.slide_in_left).skipMemoryCache(true).into(imageView);
+
+        if(contentsequence == 0) {
+            bindingContentList.add(0, ContentRepostory.getInstance().getDummyContent());
+            indexContentOfScene = 0;
+        }
+        else
+        {
+            bindingContentList.add(0, ContentRepostory.getInstance().getContextPreSceneType());
+            bindingContentList.add(1, ContentRepostory.getInstance().getDummyContent());
+            indexContentOfScene = 1;
+        }
+        //background.set(item.getSceneBackground());
+
     }
 
-    public void loadContent()  {
-        appbarExpanded.set(false);
+    public void loadContent() {
+        appbar.setExpanded(false);
         ContentItem item;
 
-        if(contentList.size() == contentsequence) return;
+        if (contentList.size() == contentsequence)
+        {
+            if(nextEpisodeID.equals(""))
+                nextBtnVisibility.set(View.GONE);
+
+            activity.showEpisodeDialog();
+            return;
+        }
         item = contentList.get(contentsequence);
 
-        if(item.getContextScene() == true) {
-        this.contextScene(item);
-    }
+        if (item.getContextScene() == true) {
+            this.contextScene(item);
+        }
+
+        if (item.getContentSequence() == 3) {
+            this.loadBackground(true, item.getSceneBackground(), "#171818");
+        }
+        if (item.getContentSequence() == 5) {
+            this.loadBackground(false, item.getSceneBackground(), "#171818");
+        }
+        if (item.getContentSequence() == 7) {
+            this.loadBackground(true, item.getSceneBackground(), "#171818");
+        }
+        if (item.getContentSequence() == 8) {
+            this.loadBackground(true, item.getSceneBackground(), "#FFEC0F0F");
+        }
 
         bindingContentList.add(indexContentOfScene, item);
         indexContentOfScene++;
-        contentsequence ++;
+        contentsequence++;
     }
     //endregion
 
     //region RecyclerView Touch Listener
-    public interface ClickListener
-    {
+    public interface ClickListener {
         void onClick();
 
         void onLongClick();
     }
 
-    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener
-    {
+    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
         private GestureDetector gestureDetector;
         private ContentPresenter.ClickListener clickListener;
 
@@ -252,22 +324,22 @@ public class ContentPresenter {
                 public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                     return false;
                 }
+
                 @Override
                 public boolean onDown(MotionEvent e) {
-                     return false;
+                    return false;
                 }
 
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
-                    clickListener.onClick();
 
+                    clickListener.onClick();
                     return false;
                 }
 
                 @Override
                 public void onLongPress(MotionEvent e) {
-                    if(clickListener != null)
-                    {
+                    if (clickListener != null) {
                         clickListener.onLongClick();
                     }
                 }
@@ -276,11 +348,13 @@ public class ContentPresenter {
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
             return this.gestureDetector.onTouchEvent(e);
         }
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
         }
 
         @Override
@@ -288,8 +362,7 @@ public class ContentPresenter {
         }
     }
 
-    public class RecyclerViewTouchListener implements ClickListener
-    {
+    public class RecyclerViewTouchListener implements ClickListener {
         @Override
         public void onClick() {
             loadContent();
@@ -297,56 +370,56 @@ public class ContentPresenter {
 
         @Override
         public void onLongClick() {
-            if(isAutoLoadContent == false) {
+            if (isAutoLoadContent == false) {
                 isAutoLoadContent = true;
                 autoLoadContent();
-            }
-            else {
+            } else {
                 isAutoLoadContent = false;
                 autoLoadContentStop();
             }
         }
     }
 
-    public void lottieClickListener(View view)
-    {
-        if(isLiked == true)
-        {
+    public void likeClickListener(View view) {
+        if (isLiked == true) {
+            likeToggle.setBackground(context.getDrawable(R.drawable.ic_unselectedheart));
             isLiked = false;
-            lottie.setAnimation("like_gray.json");
-        }
-        else
-        {
+        } else {
+            likeToggle.setBackground(context.getDrawable(R.drawable.ic_selectdheart));
             isLiked = true;
-            lottie.setAnimation("like_red.json");
         }
         toggleEpisodeLike();
+    }
+
+    public class ContextPreSceneClickListener implements ContentListener{
+        @Override
+        public void preSceneClick() {
+            Log.d("클릭했엉","클릭했엉");
+        }
     }
     //endregion
 
     //region Timer On/Off Method
-    public void autoLoadContent()
-    {
+    public void autoLoadContent() {
         timer = new Timer();
-        timer.schedule(new TimerTask(){
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 loadContent();
             }
-        }, 0 , 1000);
+        }, 0, 1000);
     }
 
-    public void autoLoadContentStop()
-    {
+    public void autoLoadContentStop() {
         timer.cancel();
     }
     //endregion
 
-    public void toggleEpisodeLike()
-    {
+    //region toggleEdpisode Like
+    public void toggleEpisodeLike() {
         ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
-        ToggleEpisodeLikeMutation mutation =  ToggleEpisodeLikeMutation
+        ToggleEpisodeLikeMutation mutation = ToggleEpisodeLikeMutation
                 .builder()
                 .id(episodeID)
                 .build();
@@ -363,22 +436,95 @@ public class ContentPresenter {
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
                     }
+
                     @Override
                     public void onNext(Response<ToggleEpisodeLikeMutation.Data> dataResponse) {
-                        if(dataResponse == null) {
+                        if (dataResponse == null) {
                             Toast.makeText(context, "예기치 못한 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        if(dataResponse.errors().size() > 0) {
+                        if (dataResponse.errors().size() > 0) {
                             Toast.makeText(context, dataResponse.errors().get(0).toString(), Toast.LENGTH_LONG).show();
                             return;
                         }
                     }
-                    @Override
-                    public void onError(Throwable e) {}
 
                     @Override
-                    public void onComplete() {}
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
                 });
     }
+    //endregion
+
+    public void loadBackground(boolean isBottom, String background, String color) {
+        View view;
+
+        if (isBottom == true) {
+            view = LayoutInflater.from(context).inflate(R.layout.view_bottom_background, flipper, false);
+
+            Glide.with(flipper.getContext())
+                    .load(background)
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            ImageView imageview = view.findViewById(R.id.background);
+                            View gradientView = view.findViewById(R.id.viewGradient);
+
+                            imageview.setBackground(resource);
+
+                            view.setBackgroundColor(Color.parseColor(color));
+
+                            GradientDrawable drawable = (GradientDrawable)gradientView.getBackground();
+                            int[] d = {Color.parseColor(color),Color.parseColor("#00000000")};
+                            drawable.setColors(d);
+
+                            gradientView.setBackground(drawable);
+
+                            flipper.addView(view);
+                            flipper.showNext();
+                        }
+                    });
+        } else {
+            view = LayoutInflater.from(context).inflate(R.layout.view_all_background, flipper, false);
+
+            Glide.with(flipper.getContext())
+                    .load(background)
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            ImageView imageview = view.findViewById(R.id.background);
+                            imageview.setBackground(resource);
+                            flipper.addView(view);
+                            flipper.showNext();
+                        }
+                    });
+        }
+
+
+    }
+
+    public void nextBtn(View view)
+    {
+        activity.openNextBtn(nextEpisodeID);
+    }
+
+    public void showEpisodeList(View view)
+    {
+        activity.openEpisodeList();
+    }
+
+    public void showCommentList(View view)
+    {
+        activity.openCommentList();
+    }
+
+    public void close(View view)
+    {
+        activity.closeDialog();
+    }
 }
+
