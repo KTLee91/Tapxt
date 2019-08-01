@@ -69,6 +69,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -100,6 +101,7 @@ public class ContentPresenter {
     private ContentContract.View activity;
     private int contentsequence = 0;
     private int indexContentOfScene = 0;
+    private int currentScene = 0;
     public CompositeDisposable disposable;
     private RecyclerView recyclerView;
     private Context context;
@@ -113,7 +115,7 @@ public class ContentPresenter {
     private String episodeID = "";
     private AppBarLayout appbar;
     private String nextEpisodeID="";
-    private boolean flag = false;
+    private HashMap<String, View> backupLastBackground;
     //endregion
 
     public ContentPresenter(Context context,ContentContract.View view ,String contentID) {
@@ -133,6 +135,7 @@ public class ContentPresenter {
         avatar = new ObservableField<>();
         nickName = new ObservableField<>();
         nextBtnVisibility = new ObservableField<>(View.VISIBLE);
+        backupLastBackground = new HashMap<>();
 
         adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
         adapter.get().setHasStableIds(true);
@@ -241,11 +244,25 @@ public class ContentPresenter {
 
     //region load Content Methods
     public void contextScene(final ContentItem item) {
-
+        ++currentScene;
         adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
         bindingContentList.clear();
 
-        if(contentsequence == 0) {
+        if(currentScene != 1)
+        {
+            View currentView = flipper.getCurrentView();
+            int preScene = currentScene -1;
+
+            if(!backupLastBackground.containsKey(String.valueOf(preScene))) {
+                if (currentView != null) {
+                    backupLastBackground.put(String.valueOf(preScene), currentView);
+                } else {
+                    backupLastBackground.put(String.valueOf(preScene), getDefaultBackgroundView());
+                }
+            }
+        }
+
+        if(currentScene == 1) {
             bindingContentList.add(0, ContentRepostory.getInstance().getDummyContent());
             indexContentOfScene = 0;
         }
@@ -256,10 +273,57 @@ public class ContentPresenter {
             indexContentOfScene = 1;
         }
         //background.set(item.getSceneBackground());
+    }
 
+    public void contextPreScene()
+    {
+        currentScene--;
+        adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
+        bindingContentList.clear();
+
+        ArrayList<ContentItem> itemList = new ArrayList<>();
+        for(int i =0; i<contentList.size(); i++)
+        {
+            ContentItem item = contentList.get(i);
+            if(item.getContentType() != Code.ContentType.IMPACT_BOTTOM_BACKGROUND &&
+                    item.getContentType() != Code.ContentType.IMPACT_COVER_BACKGROUND &&
+                    item.getSceneSequence() == currentScene)
+            {
+                itemList.add(item);
+            }
+        }
+
+        View currentView = flipper.getCurrentView();
+
+        if(currentView != null)
+            flipper.removeView(currentView);
+
+        flipper.addView(backupLastBackground.get(String.valueOf(currentScene)));
+        flipper.showNext();
+
+        if(currentScene == 1) {
+            bindingContentList.add(0, ContentRepostory.getInstance().getDummyContent());
+            bindingContentList.addAll(0, itemList);
+        }
+        else
+        {
+            bindingContentList.add(0, ContentRepostory.getInstance().getContextPreSceneType());
+            bindingContentList.add(1, ContentRepostory.getInstance().getDummyContent());
+
+            bindingContentList.addAll(1, itemList);
+        }
+
+        indexContentOfScene = itemList.size() -1;
+
+        ContentItem item = new ContentItem();
+        item = itemList.get(itemList.size() - 1);
+        contentsequence = contentList.indexOf(item) + 1;
     }
 
     public void loadContent() {
+        //indexContentOfScene : adapterList에서 현재 컨텐츠가 삽입될 위치
+        //contentsequence : 전체 콘텐트 리스에서 로드 할 콘텐트의 위치
+
         appbar.setExpanded(false);
         ContentItem item;
 
@@ -273,21 +337,21 @@ public class ContentPresenter {
         }
         item = contentList.get(contentsequence);
 
-        if (item.getContextScene() == true) {
-            this.contextScene(item);
+        if(item.getContentType() == Code.ContentType.IMPACT_COVER_BACKGROUND)
+        {
+            loadBackground(false, item.getBackground(), item.getColor());
+            contentsequence++;
+            return;
+        }
+        else if(item.getContentType() == Code.ContentType.IMPACT_BOTTOM_BACKGROUND)
+        {
+            loadBackground(true, item.getBackground(), item.getColor());
+            contentsequence++;
+            return;
         }
 
-        if (item.getContentSequence() == 3) {
-            this.loadBackground(true, item.getSceneBackground(), "#171818");
-        }
-        if (item.getContentSequence() == 5) {
-            this.loadBackground(false, item.getSceneBackground(), "#171818");
-        }
-        if (item.getContentSequence() == 7) {
-            this.loadBackground(true, item.getSceneBackground(), "#171818");
-        }
-        if (item.getContentSequence() == 8) {
-            this.loadBackground(true, item.getSceneBackground(), "#FFEC0F0F");
+        if (item.getContextScene() == true) {
+            this.contextScene(item);
         }
 
         bindingContentList.add(indexContentOfScene, item);
@@ -313,7 +377,6 @@ public class ContentPresenter {
             gestureDetector = new GestureDetector(context, new GestureDetector.OnGestureListener() {
                 @Override
                 public void onShowPress(MotionEvent e) {
-
                 }
 
                 @Override
@@ -385,16 +448,12 @@ public class ContentPresenter {
             final float translationX = child.getTranslationX();
             final float translationY = child.getTranslationY();
 
-            final float width = child.getWidth();
-            final float height = child.getHeight();
-
-            if (x >= child.getX() + translationX&&
-                    x <= child.getX() + child.getWidth() + 10 + translationX &&
-                    y >= child.getY() + translationY &&
-                    y <= child.getY()+ child.getHeight() + 10 +translationY) {
+            if (x >= child.getX() + translationX - 20 &&
+                    x <= child.getX() + child.getWidth() + 20 + translationX &&
+                    y >= child.getY() + translationY  -20 &&
+                    y <= child.getY()+ child.getHeight() + 20 +translationY) {
                 return child;
             }
-
         }
         return null;
     }
@@ -431,7 +490,7 @@ public class ContentPresenter {
     public class ContextPreSceneClickListener implements ContentListener{
         @Override
         public void preSceneClick() {
-            Log.d("클릭했엉올레","클릭했엉");
+           contextPreScene();
         }
     }
     //endregion
@@ -521,8 +580,12 @@ public class ContentPresenter {
 
                             gradientView.setBackground(drawable);
 
+                            View currentView = flipper.getCurrentView();
                             flipper.addView(view);
                             flipper.showNext();
+
+                            if(currentView != null)
+                                flipper.removeView(currentView);
                         }
                     });
         } else {
@@ -535,8 +598,13 @@ public class ContentPresenter {
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             ImageView imageview = view.findViewById(R.id.background);
                             imageview.setBackground(resource);
+
+                            View currentView = flipper.getCurrentView();
                             flipper.addView(view);
                             flipper.showNext();
+
+                            if(currentView != null)
+                                flipper.removeView(currentView);
                         }
                     });
         }
@@ -562,6 +630,14 @@ public class ContentPresenter {
     public void close(View view)
     {
         activity.closeDialog();
+    }
+
+    public View getDefaultBackgroundView()
+    {
+        View view = LayoutInflater.from(context).inflate(R.layout.view_all_background, flipper, false);
+        ImageView imageview = view.findViewById(R.id.background);
+        imageview.setBackgroundColor(context.getResources().getColor(R.color.background, null));
+        return view;
     }
 }
 

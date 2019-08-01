@@ -74,7 +74,6 @@ public class ContentRepostory {
                 item.setSceneID(scene.id());
                 item.setSceneTitle(scene.title());
                 item.setSceneSequence(scene.sequence());
-               // item.setSceneBackground(scene.sceneProperty().background());
 
                 item.setAvatar(content.character().avatar());
                 item.setName(content.character().name());
@@ -98,6 +97,8 @@ public class ContentRepostory {
                 item.setBoxColor(content.contentProperty().boxColor());
                 item.setBold(content.contentProperty().bold());
                 item.setItalic(content.contentProperty().italic());
+                item.setBackground(content.url());
+                item.setColor(content.color());
 
                 preName = content.character().name();
                 prePosition = content.contentPosition().position();

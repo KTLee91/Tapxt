@@ -10,8 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.shape.RoundedCornerTreatment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,30 +63,20 @@ public class BindingAdapter {
         if (items != null) {
             final ContentAdapter adapter = (ContentAdapter) recyclerView.getAdapter();
             adapter.setItems(items);
+            ((DefaultItemAnimator) recyclerView.getItemAnimator()).setAddDuration(0);
+
             recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
+                    recyclerView.scrollToPosition(adapter.getItemCount() -1);
                     recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    recyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerView.getLayoutManager().scrollToPosition(adapter.getItemCount() -1);
-                        }
-                    });
                 }
             });
-
         }
     }
 
     @android.databinding.BindingAdapter("bind_background")
     public static void setBindBackground(ImageView imageView, String background) {
 
-       /* Glide.with(imageView.getContext())
-                .load(background)
-                .apply(RequestOptions.placeholderOf(imageView.getDrawable()))
-                .transition(GenericTransitionOptions.with(R.anim.animation))
-                .into(imageView);
-                */
         Glide.with(imageView.getContext())
                 .load(background)
                 .apply(RequestOptions.placeholderOf(imageView.getDrawable()))
@@ -94,22 +86,7 @@ public class BindingAdapter {
 
     @android.databinding.BindingAdapter("bind_background_switcher")
     public static void setBindBackgroundfotSwitch(ViewFlipper switcher, String background) {
-        /*Glide.with(switcher.getContext())
-                .load(background)
-                .apply(RequestOptions.placeholderOf(switcher.getBackground()))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        switcher.setImageDrawable(resource);
-                        return true;
-
-                    }
-                }).into((ImageView) switcher.getCurrentView());*/
         Glide.with(switcher.getContext())
                 .load(background)
                 .apply(RequestOptions.placeholderOf(switcher.getBackground()))

@@ -205,8 +205,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     {
         this.contentItems = items;
 
-        if(contentItems.size() > 0)
-            notifyItemInserted(contentItems.size() - 1);
+        if(contentItems.size() > 1)
+           notifyItemInserted(contentItems.size() - 2);
         else
             notifyDataSetChanged();
     }

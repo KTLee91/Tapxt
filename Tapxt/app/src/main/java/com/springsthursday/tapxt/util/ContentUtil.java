@@ -15,7 +15,7 @@ public class ContentUtil {
         {
             if(isContextScene == false)
             {
-                if(content.character().name().equals(preName) && !prePosition.equals("center"))
+                if(content.character().name().equals(preName) && prePosition.equals("left"))
                     return Code.ContentType.LEFT_SERIES_CONTENT;
                 else
                     return Code.ContentType.LEFT_FIRST_CONTENT;
@@ -26,7 +26,7 @@ public class ContentUtil {
         {
             if(isContextScene == false)
             {
-                if(content.character().name().equals(preName) && !prePosition.equals("center"))
+                if(content.character().name().equals(preName) && prePosition.equals("right"))
                     return Code.ContentType.RIGHT_SERIES_CONTENT;
                 else
                     return Code.ContentType.RIGHT_FIRST_CONTENT;
@@ -45,18 +45,26 @@ public class ContentUtil {
         {
             if(isContextScene == false)
             {
-                if(content.character().name().equals(preName) && !prePosition.equals("center"))
+                if(content.character().name().equals(preName) && prePosition.equals("left"))
                     return Code.ContentType.LEFT_SERIES_IMAGE;
                 else
                     return Code.ContentType.LEFT_IMAGE;
             }
             return Code.ContentType.LEFT_IMAGE;
         }
+        else if(content.contentPosition().position().equals("cover_background_image"))
+        {
+            return Code.ContentType.IMPACT_COVER_BACKGROUND;
+        }
+        else if(content.contentPosition().position().equals("bottom_background_image"))
+        {
+            return Code.ContentType.IMPACT_BOTTOM_BACKGROUND;
+        }
         else
         {
             if(isContextScene == false)
             {
-                if(content.character().name().equals(preName) && !prePosition.equals("center"))
+                if(content.character().name().equals(preName) &&prePosition.equals("right"))
                     return Code.ContentType.RIGHT_SERIES_IMAGE;
                 else
                     return Code.ContentType.RIGHT_IMAGE;

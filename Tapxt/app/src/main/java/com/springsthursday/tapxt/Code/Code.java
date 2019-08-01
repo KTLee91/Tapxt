@@ -24,6 +24,8 @@ public class Code {
         public static final int CENTER_IMAGE = 10;
         public static final int LEFT_SERIES_IMAGE = 11;
         public static final int RIGHT_SERIES_IMAGE = 12;
+        public static final int IMPACT_COVER_BACKGROUND = 13;
+        public static final int IMPACT_BOTTOM_BACKGROUND=14;
     }
 
     public class Orderby

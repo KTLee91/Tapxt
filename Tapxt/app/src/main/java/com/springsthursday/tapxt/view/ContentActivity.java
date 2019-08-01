@@ -60,6 +60,8 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         Intent intent = getIntent();
         contentID = intent.getStringExtra("EpisodeID");
 
+        Log.d("EpisodeID", contentID);
+
         this.setUpView();
     }
 
@@ -84,14 +86,13 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator() {
             @Override
             public boolean animateMove(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
                 return false;
-
             }
         });
-
 
         binding.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_in));

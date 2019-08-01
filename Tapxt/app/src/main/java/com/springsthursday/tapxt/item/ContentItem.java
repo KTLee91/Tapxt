@@ -19,7 +19,6 @@ public class ContentItem {
     private String sceneID = "";
     private String sceneTitle = "";
     private int sceneSequence = 1;
-    private String sceneBackground = "";
     private String sceneSound = "";
 
     private Boolean isContextScene = false;
@@ -29,6 +28,8 @@ public class ContentItem {
     private String boxColor = "";
     private boolean isBold = false;
     private boolean isItalic = false;
+    private String color = "";
+    private String background="";
 
     public String getEpisodeTitle() {
         return episodeTitle;
@@ -56,10 +57,6 @@ public class ContentItem {
 
     public String getSceneTitle() {
         return sceneTitle;
-    }
-
-    public String getSceneBackground() {
-        return sceneBackground;
     }
 
     public String getSceneSound() {
@@ -92,6 +89,14 @@ public class ContentItem {
 
     public String getBoxColor() {
         return boxColor;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getBackground() {
+        return background;
     }
 
     public boolean isBold() {
@@ -132,10 +137,6 @@ public class ContentItem {
 
     public void setSceneTitle(String sceneTitle) {
         this.sceneTitle = sceneTitle;
-    }
-
-    public void setSceneBackground(String sceneBackground) {
-        this.sceneBackground = sceneBackground;
     }
 
     public void setSceneSound(String sceneSound) {
@@ -184,5 +185,13 @@ public class ContentItem {
 
     public void setContentTypeForString(String contentTypeForString) {
         this.contentTypeForString = contentTypeForString;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 }

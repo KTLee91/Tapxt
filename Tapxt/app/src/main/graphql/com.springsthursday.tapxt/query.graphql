@@ -140,6 +140,7 @@ query seeEpisode($id : String!)
                 }
                 text
                 url
+                color
             }
         }
         comments{
