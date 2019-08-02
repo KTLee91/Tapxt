@@ -258,6 +258,7 @@ public class CommentPresenter {
                claps.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.left_like_red, null),null,null,null);
                int count = Integer.parseInt(item.clapsCount.get());
                ++count;
+
                item.clapsCount.set(String.valueOf(count));
                item.addClaps(UserInfo.getInstance().userInfoItem.getNickName());
            }

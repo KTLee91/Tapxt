@@ -58,7 +58,7 @@ public class BindingAdapter {
             recyclerView.setAdapter(adapter.get());
     }
 
-    @android.databinding.BindingAdapter("bind_items")
+    /*@android.databinding.BindingAdapter("bind_items")
     public static void setBindItems(final RecyclerView recyclerView, ObservableArrayList items) {
         if (items != null) {
             final ContentAdapter adapter = (ContentAdapter) recyclerView.getAdapter();
@@ -72,7 +72,7 @@ public class BindingAdapter {
                 }
             });
         }
-    }
+    }*/
 
     @android.databinding.BindingAdapter("bind_background")
     public static void setBindBackground(ImageView imageView, String background) {

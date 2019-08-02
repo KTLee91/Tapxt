@@ -27,6 +27,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -94,10 +97,17 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
             }
         });
 
-        binding.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_in));
-        binding.viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_out));
+        ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setAddDuration(0);
+        ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setRemoveDuration(500);
+
+   //     binding.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+     //   binding.viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_out));
+
+      /*  Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+        fadeOut.setStartOffset(1000);
+        fadeOut.setDuration(1500);
+        binding.viewFlipper.setOutAnimation(fadeOut);*/
 
         viewModel.inqueryContent();
     }

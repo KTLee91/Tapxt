@@ -204,11 +204,26 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void setItems(ArrayList<ContentItem> items)
     {
         this.contentItems = items;
+        notifyDataSetChanged();
+    }
 
-        if(contentItems.size() > 1)
-           notifyItemInserted(contentItems.size() - 2);
-        else
-            notifyDataSetChanged();
+    public void addItem(ContentItem item, int position)
+    {
+        this.contentItems.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void addAllItems(ArrayList<ContentItem> items, int position)
+    {
+        this.contentItems.addAll(position, items);
+        notifyItemRangeInserted(0, contentItems.size() -1);
+    }
+
+    public void removeItems()
+    {
+        int removePosition = this.contentItems.size() -1;
+        contentItems.clear();
+        notifyItemRangeRemoved(0, removePosition);
     }
 
 
