@@ -23,11 +23,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.View {
     private ProfilePresenter viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-
-        /*Window window = getActivity().getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setNavigationBarColor(getActivity().getColor(R.color.background));*/
-
         setHasOptionsMenu(true);
         return DataBindingUtil.inflate(inflater,R.layout.fragment_profile, container, false).getRoot();
     }
@@ -40,8 +35,6 @@ public class ProfileFragment extends Fragment implements ProfileContract.View {
         viewModel = new ProfilePresenter(this);
         FragmentProfileBinding binding = DataBindingUtil.getBinding(getView());
         binding.setViewModel(viewModel);
-
-        viewModel.loadProfile();
     }
 
     @Override

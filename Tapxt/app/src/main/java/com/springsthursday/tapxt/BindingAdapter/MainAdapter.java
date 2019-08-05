@@ -44,6 +44,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         viewHolder.binding.recyclerview.setHasFixedSize(true);
         viewHolder.binding.recyclerview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         viewHolder.binding.recyclerview.setNestedScrollingEnabled (false);
+        viewHolder.binding.recyclerview.setVerticalScrollBarEnabled(false);
         viewHolder.binding.recyclerview.setAdapter(new SubAdapter(AllStoryList.get(position), listener));
     }
 

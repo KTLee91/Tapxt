@@ -93,7 +93,6 @@ public class VerificationActivity extends AppCompatActivity implements Verificat
 
     @Override
     public void showProgressDialog(String loadingMessage) {
-
         if(dialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View view = getLayoutInflater().inflate(R.layout.dialog_progressbar, null);
@@ -115,6 +114,7 @@ public class VerificationActivity extends AppCompatActivity implements Verificat
         if(dialog != null) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             dialog.dismiss();
+            dialog = null;
         }
     }
 }

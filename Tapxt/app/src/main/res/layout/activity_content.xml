@@ -96,7 +96,51 @@
             bind_background_switcher="@{viewModel.background}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY" >
+
+        </ViewFlipper>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            bind_adapter="@{viewModel.adapter}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000927C4"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+            <ImageButton
+                android:id="@+id/stopAutoLoadContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|clip_vertical|center_horizontal|fill"
+                android:onClick="@{viewModel.clickTest}"
+                android:src="@android:drawable/ic_media_pause"
+                android:visibility="@{viewModel.autoLoadViewVisibility}"
+                app:layout_constraintBottom_toTopOf="@id/autoLoadSpeed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <SeekBar
+                android:id="@+id/autoLoadSpeed"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="100dp"
+                android:visibility="@{viewModel.autoLoadViewVisibility}"
+                android:min="10"
+                android:max="100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+        </android.support.constraint.ConstraintLayout>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation_view"
@@ -107,12 +151,6 @@
             app:lottie_fileName="loader.json"
             app:lottie_loop="true" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            bind_adapter="@{viewModel.adapter}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#000927C4"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
+
 </layout>

@@ -32,48 +32,9 @@ public class ProfilePresenter {
     {
        progressBarVisibility.set(View.GONE);
         this.activity = view;
-    }
 
-    public void loadProfile()
-    {
-        progressBarVisibility.set(View.VISIBLE);
-        ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
-
-        GetUserProfileQuery query = GetUserProfileQuery.builder().build();
-        ApolloCall<GetUserProfileQuery.Data> apolloCall1 = apolloClienmt.query(query);
-        Observable<Response<GetUserProfileQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
-
-        disposable = new CompositeDisposable();
-
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<GetUserProfileQuery.Data>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable.add(d);
-                    }
-                    @Override
-                    public void onNext(Response<GetUserProfileQuery.Data> dataResponse) {
-                        if(dataResponse.data() == null) {
-                            progressBarVisibility.set(View.GONE);
-                            return;
-                        }
-
-                        progressBarVisibility.set(View.GONE);
-
-                        UserInfo.getInstance().userInfoItem.setNickName(dataResponse.data().me().nickname());
-                        UserInfo.getInstance().userInfoItem.setImageUrl(dataResponse.data().me().avatar());
-
-                        nickName.set(UserInfo.getInstance().userInfoItem.getNickName());
-                        imageUrl.set(UserInfo.getInstance().userInfoItem.getImageUrl());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onComplete() {}
-                });
+        nickName.set(UserInfo.getInstance().userInfoItem.getNickName());
+        imageUrl.set(UserInfo.getInstance().userInfoItem.getImageUrl());
     }
 
     public void setUserInfo(String nickName, String imageUrl)

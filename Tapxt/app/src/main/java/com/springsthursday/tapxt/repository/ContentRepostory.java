@@ -74,6 +74,7 @@ public class ContentRepostory {
                 item.setSceneID(scene.id());
                 item.setSceneTitle(scene.title());
                 item.setSceneSequence(scene.sequence());
+                item.setSceneSound(scene.sceneProperty().sound());
 
                 item.setAvatar(content.character().avatar());
                 item.setName(content.character().name());

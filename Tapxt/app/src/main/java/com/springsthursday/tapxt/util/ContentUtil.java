@@ -1,5 +1,8 @@
 package com.springsthursday.tapxt.util;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.springsthursday.tapxt.Code.Code;
 import com.springsthursday.tapxt.SeeEpisodeQuery;
 
@@ -71,5 +74,25 @@ public class ContentUtil {
             }
             return Code.ContentType.RIGHT_IMAGE;
         }
+    }
+
+    public static View findExactChild(View childView, float x, float y) {
+        if (!(childView instanceof ViewGroup)) return childView;
+        ViewGroup group = (ViewGroup) childView;
+        final int count = group.getChildCount();
+        for (int i = count - 1; i >= 0; i--) {
+            final View child = group.getChildAt(i);
+
+            final float translationX = child.getTranslationX();
+            final float translationY = child.getTranslationY();
+
+            if (x >= child.getX() + translationX - 20 &&
+                    x <= child.getX() + child.getWidth() + 20 + translationX &&
+                    y >= child.getY() + translationY - 20 &&
+                    y <= child.getY() + child.getHeight() + 20 + translationY) {
+                return child;
+            }
+        }
+        return null;
     }
 }

@@ -1,47 +1,40 @@
 package com.springsthursday.tapxt.view;
 
-import android.app.ActionBar;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.Scroller;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.SeekBar;
 
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ContentContract;
 import com.springsthursday.tapxt.databinding.ActivityContentBinding;
 import com.springsthursday.tapxt.databinding.DialogEpisodeBinding;
+import com.springsthursday.tapxt.item.AppSettingItem;
+import com.springsthursday.tapxt.listener.RecyclerTouchListener;
+import com.springsthursday.tapxt.listener.RecyclerViewClickListener;
 import com.springsthursday.tapxt.presenter.ContentPresenter;
+import com.springsthursday.tapxt.repository.AppSettingIngo;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ContentActivity extends AppCompatActivity implements ContentContract.View {
 
@@ -50,6 +43,11 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
     private Toolbar toolbar;
     private String contentID;
     private Dialog episodeDialog;
+    private Timer timer;
+    private TimerTask timerTask;
+    private boolean isAutoLoadContent = false;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,8 +86,12 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+
+        binding.autoLoadSpeed.setProgress(AppSettingIngo.getInstance().getautoSpeed());
+
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator() {
             @Override
             public boolean animateMove(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
@@ -100,14 +102,30 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setAddDuration(0);
         ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setRemoveDuration(500);
 
-   //     binding.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
-     //   binding.viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_out));
+        binding.autoLoadSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-      /*  Animation fadeOut = new AlphaAnimation(1, 0);
-        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-        fadeOut.setStartOffset(1000);
-        fadeOut.setDuration(1500);
-        binding.viewFlipper.setOutAnimation(fadeOut);*/
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int period = seekBar.getMax() - seekBar.getProgress();
+
+                editor.putInt("AutoSpeed", period);
+                editor.apply();
+
+                AppSettingIngo.getInstance().setAutoSpeed(seekBar.getProgress());
+
+                autoLoadContentStop(false);
+                autoLoadContent(period);
+            }
+        });
 
         viewModel.inqueryContent();
     }
@@ -178,10 +196,108 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
 
+        if(timer != null) timer.cancel();
         if(episodeDialog != null) episodeDialog.dismiss();
         if(viewModel.disposable != null) viewModel.disposable.dispose();
+
+        if(viewModel.backgroundSoundPlayer != null) {
+            viewModel.backgroundSoundPlayer.release();
+            viewModel.backgroundSoundPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        if(viewModel.backgroundSoundPlayer != null) {
+            if(viewModel.backgroundSoundPlayer.isPlaying() == true)
+            {
+                try {
+                    viewModel.backgroundSoundPlayer.stop();
+                    viewModel.backgroundSoundPlayer.release();
+                    viewModel.backgroundSoundPlayer=null;
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        super.onUserLeaveHint();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        viewModel.startBackgroundSound();
+
+    }
+
+    @Override
+    public void setTouchListener() {
+        binding.recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), binding.recyclerView, new clickListener()));
+    }
+
+    public class clickListener implements RecyclerViewClickListener
+    {
+        @Override
+        public void onClick() {
+            viewModel.loadContent();
+        }
+
+        @Override
+        public void onLongClick() {
+            setTimer(true, false,AppSettingIngo.getInstance().getautoSpeed());
+        }
+    }
+
+    @Override
+    public void setTimer(boolean isLongClick, boolean isAutoSpeedChanged, int period) {
+        if (isAutoLoadContent == false) {
+            isAutoLoadContent = true;
+            autoLoadContent(period);
+        } else {
+            if(isLongClick == false) {
+                isAutoLoadContent = false;
+                autoLoadContentStop(isAutoSpeedChanged);
+            }
+        }
+    }
+
+    public void autoLoadContent(int period) {
+
+        viewModel.setAutoLoadViewVisibility(View.VISIBLE);
+
+        timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewModel.loadContent();
+                    }
+                });
+            }
+        }, 0, period * 100);
+    }
+
+    public void autoLoadContentStop(boolean isAutoSpeedChanged) {
+        timer.cancel();
+
+        if(isAutoSpeedChanged == false)
+            viewModel.setAutoLoadViewVisibility(View.GONE);
+    }
+
+    public void autoLoadContentStop()
+    {
+        if(isAutoLoadContent == true) {
+            timer.cancel();
+            viewModel.setAutoLoadViewVisibility(View.GONE);
+        }
     }
 }

@@ -20,7 +20,6 @@ public class ContentItem {
     private String sceneTitle = "";
     private int sceneSequence = 1;
     private String sceneSound = "";
-
     private Boolean isContextScene = false;
 
     //Property

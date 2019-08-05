@@ -8,5 +8,8 @@ public interface ContentContract {
         void openEpisodeList();
         void openCommentList();
         void closeDialog();
+        void setTouchListener();
+        void setTimer(boolean isLongClick, boolean isAutoSpeedChanged, int period);
+        void autoLoadContentStop();
     }
 }

@@ -121,6 +121,9 @@ query seeEpisode($id : String!)
             id
             title
             sequence
+            sceneProperty{
+                sound
+            }
             contents{
                 contentType{
                     type

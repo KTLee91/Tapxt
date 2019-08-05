@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -87,7 +89,6 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class ContentPresenter {
-
     public ObservableField<ContentAdapter> adapter;
     public ObservableInt loderVisibility;
     public ObservableField<String> background;
@@ -99,6 +100,7 @@ public class ContentPresenter {
     public ObservableField<String> avatar;
     public ObservableField<String> nickName;
     public ObservableField<Integer> nextBtnVisibility;
+    public ObservableField<Integer> autoLoadViewVisibility;
 
     //region General Field
     private ArrayList<ContentItem> contentList;
@@ -109,8 +111,6 @@ public class ContentPresenter {
     public CompositeDisposable disposable;
     private RecyclerView recyclerView;
     private Context context;
-    private Timer timer;
-    private boolean isAutoLoadContent = false;
     private boolean isLiked = false;
     private String contentID;
     private ViewFlipper flipper;
@@ -120,16 +120,19 @@ public class ContentPresenter {
     private AppBarLayout appbar;
     private String nextEpisodeID = "";
     private HashMap<String, String> backupLastBackground;
+    private HashMap<String, String> sceneBackgroudSound;
     private AnimationSet animationSet;
-    public MediaPlayer coverPlayer;
     private View currentView;
     private int impactIndex = 0;
+    public MediaPlayer backgroundSoundPlayer;
+    private String currentBackgroundSound;
     //endregion
 
     public ContentPresenter(Context context, ContentContract.View view, String contentID) {
         this.context = context;
         this.contentID = contentID;
         activity = view;
+        currentBackgroundSound = "";
 
         contentList = new ArrayList<>();
         loderVisibility = new ObservableInt(View.GONE);
@@ -142,7 +145,10 @@ public class ContentPresenter {
         avatar = new ObservableField<>();
         nickName = new ObservableField<>();
         nextBtnVisibility = new ObservableField<>(View.VISIBLE);
+        autoLoadViewVisibility = new ObservableField<>(View.GONE);
+
         backupLastBackground = new HashMap<>();
+        sceneBackgroudSound = new HashMap<>();
         animationSet = new AnimationSet(false);
 
         adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
@@ -176,6 +182,11 @@ public class ContentPresenter {
 
     public void setAppbar(AppBarLayout appbar) {
         this.appbar = appbar;
+    }
+
+    public void setAutoLoadViewVisibility(int visibility)
+    {
+        this.autoLoadViewVisibility.set(visibility);
     }
 
     public void inqueryContent() {
@@ -228,7 +239,18 @@ public class ContentPresenter {
 
                         contentList = ContentRepostory.getInstance().LoadContentList(dataResponse);
 
-                        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerViewTouchListener()));
+                        //실제 서버 연동 코드
+                       /* for(int k =0; k < dataResponse.data().seeEpisode().scenes().size(); k++)
+                        {
+                            SeeEpisodeQuery.Scene scene = dataResponse.data().seeEpisode().scenes().get(k);
+                            sceneBackgroudSound.put(String.valueOf(k+1), scene.sceneProperty().sound());
+                        }*/
+
+                        sceneBackgroudSound.put(String.valueOf(1), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio1.mp3");
+                        sceneBackgroudSound.put(String.valueOf(2), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio2.mp3");
+                        sceneBackgroudSound.put(String.valueOf(3), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio3.mp3");
+
+                        activity.setTouchListener();
 
                         if (isLiked == true)
                             likeToggle.setBackground(context.getDrawable(R.drawable.ic_selectdheart));
@@ -266,7 +288,6 @@ public class ContentPresenter {
         ArrayList<ContentItem> list = new ArrayList<>();
 
         if (currentScene != 1) {
-            View currentView = flipper.getCurrentView();
             int preScene = currentScene - 1;
 
             if (!backupLastBackground.containsKey(String.valueOf(preScene))) {
@@ -275,25 +296,24 @@ public class ContentPresenter {
             }
         }
 
+        currentBackgroundSound = sceneBackgroudSound.get(String.valueOf(currentScene));
+        startBackgroundSound();
+
         for (int i = 0; i < contentList.size(); i++) {
             ContentItem current = contentList.get(i);
 
             if ((current.getContentType() == Code.ContentType.IMPACT_BOTTOM_BACKGROUND || current.getContentType() == Code.ContentType.IMPACT_COVER_BACKGROUND)
-                    && current.getSceneSequence() == currentScene)
-            {
+                    && current.getSceneSequence() == currentScene) {
                 list.add(current);
             }
         }
 
         if (list.size() == 0) {
-            if (flipper.getChildAt(impactIndex) == null)
-            {
+            if (flipper.getChildAt(impactIndex) == null) {
                 flipper.addView(getDefaultBackgroundView());
                 flipper.showNext();
                 impactIndex++;
-            }
-            else
-            {
+            } else {
                 flipper.setDisplayedChild(impactIndex);
                 impactIndex++;
             }
@@ -320,7 +340,9 @@ public class ContentPresenter {
 
     public void contextPreScene() {
         currentScene--;
-        // adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
+
+        currentBackgroundSound = sceneBackgroudSound.get(String.valueOf(currentScene));
+        startBackgroundSound();
 
         ArrayList<ContentItem> itemList = new ArrayList<>();
         for (int i = 0; i < contentList.size(); i++) {
@@ -368,13 +390,14 @@ public class ContentPresenter {
         //indexContentOfScene : adapterList에서 현재 컨텐츠가 삽입될 위치
         //contentsequence : 전체 콘텐트 리스에서 로드 할 콘텐트의 위치
 
-       // appbar.setExpanded(false);
+        appbar.setExpanded(false);
         ContentItem item;
 
         if (contentList.size() == contentsequence) {
             if (nextEpisodeID.equals(""))
                 nextBtnVisibility.set(View.GONE);
 
+            activity.autoLoadContentStop();
             activity.showEpisodeDialog();
             return;
         }
@@ -383,11 +406,9 @@ public class ContentPresenter {
         View view = flipper.getChildAt(impactIndex);
 
         if (item.getContentType() == Code.ContentType.IMPACT_COVER_BACKGROUND) {
-            if(view != null)
-            {
+            if (view != null) {
                 flipper.setDisplayedChild(impactIndex);
-            }
-            else {
+            } else {
                 loadBackground(false, item.getBackground(), item.getColor());
             }
 
@@ -396,11 +417,9 @@ public class ContentPresenter {
             return;
 
         } else if (item.getContentType() == Code.ContentType.IMPACT_BOTTOM_BACKGROUND) {
-            if(view != null)
-            {
+            if (view != null) {
                 flipper.setDisplayedChild(impactIndex);
-            }
-            else {
+            } else {
                 loadBackground(true, item.getBackground(), item.getColor());
             }
 
@@ -421,120 +440,6 @@ public class ContentPresenter {
     }
     //endregion
 
-    //region RecyclerView Touch Listener
-    public interface ClickListener {
-        void onClick();
-
-        void onLongClick();
-    }
-
-    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-        private GestureDetector gestureDetector;
-        private ContentPresenter.ClickListener clickListener;
-
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final ContentPresenter.ClickListener clickListener) {
-            this.clickListener = clickListener;
-
-            gestureDetector = new GestureDetector(context, new GestureDetector.OnGestureListener() {
-                @Override
-                public void onShowPress(MotionEvent e) {
-                }
-
-                @Override
-                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                    return false;
-                }
-
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                    return false;
-                }
-
-                @Override
-                public boolean onDown(MotionEvent e) {
-                    return false;
-                }
-
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    View exactView = null;
-
-                    if (childView != null)
-                        exactView = findExactChild(childView, e.getX(), e.getY());
-
-                    if (exactView != null) {
-                        if (exactView.getId() == R.id.btn) {
-                            return false;
-                        }
-                    }
-                    clickListener.onClick();
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    if (clickListener != null) {
-                        clickListener.onLongClick();
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            return this.gestureDetector.onTouchEvent(e);
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        }
-    }
-
-    public static View findExactChild(View childView, float x, float y) {
-        if (!(childView instanceof ViewGroup)) return childView;
-        ViewGroup group = (ViewGroup) childView;
-        final int count = group.getChildCount();
-        for (int i = count - 1; i >= 0; i--) {
-            final View child = group.getChildAt(i);
-
-            final float translationX = child.getTranslationX();
-            final float translationY = child.getTranslationY();
-
-            if (x >= child.getX() + translationX - 20 &&
-                    x <= child.getX() + child.getWidth() + 20 + translationX &&
-                    y >= child.getY() + translationY - 20 &&
-                    y <= child.getY() + child.getHeight() + 20 + translationY) {
-                return child;
-            }
-        }
-        return null;
-    }
-
-    public class RecyclerViewTouchListener implements ClickListener {
-        @Override
-        public void onClick() {
-            loadContent();
-        }
-
-        @Override
-        public void onLongClick() {
-            if (isAutoLoadContent == false) {
-                isAutoLoadContent = true;
-                autoLoadContent();
-            } else {
-                isAutoLoadContent = false;
-                autoLoadContentStop();
-            }
-        }
-    }
-
     public void likeClickListener(View view) {
         if (isLiked == true) {
             likeToggle.setBackground(context.getDrawable(R.drawable.ic_unselectedheart));
@@ -551,22 +456,6 @@ public class ContentPresenter {
         public void preSceneClick() {
             contextPreScene();
         }
-    }
-    //endregion
-
-    //region Timer On/Off Method
-    public void autoLoadContent() {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                loadContent();
-            }
-        }, 0, 1000);
-    }
-
-    public void autoLoadContentStop() {
-        timer.cancel();
     }
     //endregion
 
@@ -696,5 +585,41 @@ public class ContentPresenter {
         });
     }
 
+    public void startBackgroundSound()
+    {
+        if(currentBackgroundSound == null || currentBackgroundSound.isEmpty()) return;
+
+        try {
+            if(backgroundSoundPlayer == null)
+                backgroundSoundPlayer = new MediaPlayer();
+            else
+                backgroundSoundPlayer.reset();
+
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+
+            backgroundSoundPlayer.setAudioAttributes(audioAttributes);
+            backgroundSoundPlayer.setDataSource(currentBackgroundSound);
+            backgroundSoundPlayer.prepareAsync();
+            backgroundSoundPlayer.setLooping(true);
+
+            backgroundSoundPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    backgroundSoundPlayer.start();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            backgroundSoundPlayer.release();
+        }
+    }
+
+    public void clickTest(View view)
+    {
+       activity.setTimer(false, false, 0);
+    }
 }
 

@@ -9,12 +9,17 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.springsthursday.tapxt.ConfirmSmsVerificationMutation;
+import com.springsthursday.tapxt.GetUserProfileQuery;
+import com.springsthursday.tapxt.item.FollowItem;
+import com.springsthursday.tapxt.repository.UserInfo;
 import com.springsthursday.tapxt.validation.Validation;
 import com.springsthursday.tapxt.constract.VerificationContract;
 import com.springsthursday.tapxt.database.DatabaseManager;
 import com.springsthursday.tapxt.handler.UserInfoHandler;
 import com.springsthursday.tapxt.item.UserInfoItem;
 import com.springsthursday.tapxt.util.ApolloClientObject;
+
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -115,15 +120,46 @@ public class VerificationPresenter {
         else
             DatabaseManager.getInstance(context).insertUserRecord(phoneNumber, token);
 
-        UserInfoItem userInfoItem = new UserInfoItem();
-        userInfoItem.setPhoneNumber(phoneNumber);
-        userInfoItem.setToken(token);
+        UserInfoHandler.getInstance().setNumberNToken(phoneNumber, token);
 
-        UserInfoHandler.getInstance().setUserInfo(userInfoItem);
+        ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
 
-        DatabaseManager.getInstance(context).displayRecord();
+        GetUserProfileQuery query = GetUserProfileQuery.builder().build();
+        ApolloCall<GetUserProfileQuery.Data> apolloCall1 = apolloClienmt.query(query);
+        Observable<Response<GetUserProfileQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
 
-        activity.MoveMainContentActivity();
+        disposable = new CompositeDisposable();
+        activity.showProgressDialog("사용자 정보 가져오는 중..");
+
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<GetUserProfileQuery.Data>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(Response<GetUserProfileQuery.Data> dataResponse) {
+
+                        activity.hideProgressDialog();
+
+                        if (dataResponse.data() == null) {
+                            return;
+                        }
+
+                        UserInfoHandler.getInstance().initilizeUserInfo(dataResponse);
+                        activity.MoveMainContentActivity();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     public void dispose()

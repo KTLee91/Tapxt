@@ -2,7 +2,6 @@ package com.springsthursday.tapxt.view;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,34 +9,24 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.airbnb.lottie.LottieAnimationView;
-import com.springsthursday.tapxt.BindingAdapter.MainBannerAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.HomeContract;
 import com.springsthursday.tapxt.databinding.FragmentHomeBinding;
-import com.springsthursday.tapxt.item.StoryItem;
 import com.springsthursday.tapxt.presenter.HomePresenter;
-import com.springsthursday.tapxt.repository.UserInfo;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     private HomePresenter viewModel;
-    private LottieAnimationView lottie;
     private FragmentHomeBinding binding;
     private int currentPage = 0;
     private Timer timer;
-    private Toolbar toolbar;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -77,18 +66,12 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (Math.abs(verticalOffset)-appBarLayout.getTotalScrollRange() == 0)
-                {
                     binding.title.setVisibility(View.VISIBLE);
-                }
                 else
-                {
                     binding.title.setVisibility(View.GONE);
-                }
             }
         });
 
-
-        viewModel.loadProfile();
         viewModel.loadMainBanner();
         viewModel.loadFeed();
     }
