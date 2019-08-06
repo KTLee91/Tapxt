@@ -5,5 +5,6 @@ public interface ProfileUpdateContract {
     {
         void finishActivity(String nickName, String imageUrl);
         void showDuplicatedNickNameMessage();
+        void openGallery();
     }
 }

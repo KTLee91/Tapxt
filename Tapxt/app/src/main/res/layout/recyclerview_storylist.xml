@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="storyItem"
+            type="com.springsthursday.tapxt.item.StoryItem" />
+    </data>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        bind_background_round="@{storyItem.cover}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id ="@+id/commentLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/imageTitleMargin"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/cover"
+        app:layout_constraintTop_toBottomOf="@id/cover"
+        app:layout_constraintRight_toRightOf="@id/cover">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/nanumsquareregular"
+            android:inputType="textImeMultiLine"
+            android:maxLines="2"
+            android:text="@{storyItem.title}"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/storyTitleSize" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
+</layout>

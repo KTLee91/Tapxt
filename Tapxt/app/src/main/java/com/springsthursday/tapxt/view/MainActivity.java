@@ -38,7 +38,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //getWindow().setNavigationBarColor(getColor(R.color.background));
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().setNavigationBarColor(getColor(R.color.background));
+        getWindow().setStatusBarColor(getColor(R.color.titlebar));
 
         setContentView(R.layout.activity_main);
 
@@ -69,11 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     homeFragment = new HomeFragment();
                     fragmentManager.beginTransaction().add(R.id.frameLayout, homeFragment).commit();
                 }
-                Window window = getWindow();
-
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setNavigationBarColor(getColor(R.color.background));
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
                 fragmentManager.beginTransaction().show(homeFragment).commit();
 
@@ -88,9 +87,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     fragmentManager.beginTransaction().add(R.id.frameLayout, categoryFragment).commit();
                 }
 
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                getWindow().setNavigationBarColor(getColor(R.color.background));
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
                 fragmentManager.beginTransaction().show(categoryFragment).commit();
                 if(homeFragment != null) fragmentManager.beginTransaction().hide(homeFragment).commit();
@@ -103,9 +100,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     fragmentManager.beginTransaction().add(R.id.frameLayout, profileFragment).commit();
                 }
 
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                getWindow().setNavigationBarColor(getColor(R.color.background));
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
                 fragmentManager.beginTransaction().show(profileFragment).commit();
                 if(homeFragment != null) fragmentManager.beginTransaction().hide(homeFragment).commit();

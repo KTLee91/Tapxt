@@ -41,7 +41,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     public void onBindViewHolder(@NonNull MainViewHolder viewHolder, int position) {
         viewHolder.binding.tag.setText(AllStoryList.get(position).get(0).getFeedTag());
 
-        viewHolder.binding.recyclerview.setHasFixedSize(true);
         viewHolder.binding.recyclerview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         viewHolder.binding.recyclerview.setNestedScrollingEnabled (false);
         viewHolder.binding.recyclerview.setVerticalScrollBarEnabled(false);

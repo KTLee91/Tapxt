@@ -28,6 +28,10 @@ public class ProfilePresenter {
     public ObservableField<Integer> progressBarVisibility= new ObservableField<>();
     public ObservableField<String> imageUrl = new ObservableField<>();
 
+    public ObservableField<String> storyCount = new ObservableField<>();
+    public ObservableField<String> followerCount = new ObservableField<>();
+    public ObservableField<String> followingCount = new ObservableField<>();
+
     public ProfilePresenter(ProfileContract.View view)
     {
        progressBarVisibility.set(View.GONE);
@@ -35,6 +39,10 @@ public class ProfilePresenter {
 
         nickName.set(UserInfo.getInstance().userInfoItem.getNickName());
         imageUrl.set(UserInfo.getInstance().userInfoItem.getImageUrl());
+
+        storyCount.set(UserInfo.getInstance().userInfoItem.getCreateStoryCount());
+        followerCount.set(UserInfo.getInstance().userInfoItem.getFollowerCount());
+        followingCount.set(UserInfo.getInstance().userInfoItem.getFollowingCountForString());
     }
 
     public void setUserInfo(String nickName, String imageUrl)

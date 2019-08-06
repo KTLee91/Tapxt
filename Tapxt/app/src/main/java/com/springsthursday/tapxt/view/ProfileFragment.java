@@ -5,6 +5,9 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.springsthursday.tapxt.BindingAdapter.StoryListPagerAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ProfileContract;
 import com.springsthursday.tapxt.databinding.FragmentProfileBinding;
@@ -35,9 +39,39 @@ public class ProfileFragment extends Fragment implements ProfileContract.View {
         viewModel = new ProfilePresenter(this);
         FragmentProfileBinding binding = DataBindingUtil.getBinding(getView());
         binding.setViewModel(viewModel);
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(binding.toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("읽은 작품"));
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("좋아요 한 작품"));
+        binding.tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        StoryListPagerAdapter pagerAdapter = new StoryListPagerAdapter(getActivity().getSupportFragmentManager(), binding.tabLayout.getTabCount());
+        binding.viewPager.setAdapter(pagerAdapter);
+        binding.viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tabLayout));
+
+        // Set TabSelectedListener
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                binding.viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
-    @Override
+   @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         menu.clear();

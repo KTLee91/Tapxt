@@ -22,8 +22,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements ProfileU
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setNavigationBarColor(getColor(R.color.background));
+        getWindow().setStatusBarColor(getColor(R.color.titlebar));
 
         setContentView(R.layout.activity_profileupdate);
 
@@ -42,7 +42,6 @@ public class ProfileUpdateActivity extends AppCompatActivity implements ProfileU
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("프로필 수정");
-        toolbar.getBackground().setAlpha(0);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -80,5 +79,10 @@ public class ProfileUpdateActivity extends AppCompatActivity implements ProfileU
     @Override
     public void showDuplicatedNickNameMessage() {
         Toast.makeText(this, "현재 닉네임과 동일합니다.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void openGallery() {
+
     }
 }

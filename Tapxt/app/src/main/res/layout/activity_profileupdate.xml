@@ -8,13 +8,14 @@
     </data>
 <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/titlebar"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,8 +28,21 @@
             android:text="프로필 수정"
             android:layout_gravity="center"
             android:id="@+id/toolbar_title"
-            android:textSize="20sp"
+            android:fontFamily="@font/nanumsquareextrabold"
+            android:textColor="@color/defaultWhite"
+            android:textSize="@dimen/appbarTitleSize"
             />
+        <TextView
+            android:id="@+id/complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:fontFamily="@font/nanumsquareregular"
+            android:text="완료"
+            android:onClick="@{viewModel.clickComplete}"
+            android:layout_marginRight="@dimen/appbarMenuRight"
+            android:textColor="@color/defaultGery"
+            android:textSize="@dimen/appbarMenuSize" />
     </android.support.v7.widget.Toolbar>
 
 
@@ -51,6 +65,8 @@
         android:layout_marginTop="10dp"
         android:text="@{viewModel.nickName}"
         android:textSize="30dp"
+        android:fontFamily="@font/nanumsquareregular"
+        android:textColor="@color/defaultWhite"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image" />
@@ -63,6 +79,8 @@
         android:layout_marginTop="10dp"
         android:text="닉네임"
         android:textSize="15dp"
+        android:fontFamily="@font/nanumsquareregular"
+        android:textColor="@color/defaultWhite"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nickName" />
 

@@ -32,9 +32,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     {
         Window window = getActivity().getWindow();
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setNavigationBarColor(getActivity().getColor(R.color.background));
-
         viewModel = new HomePresenter(this, getActivity().getApplicationContext());
 
         FragmentHomeBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
@@ -57,8 +54,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         ((AppCompatActivity)getActivity()).setSupportActionBar(binding.toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        binding.recyclerView.setHasFixedSize(true);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity().getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        binding.recyclerView.setLayoutManager(manager);
+        binding.recyclerView.setHorizontalScrollBarEnabled(false);
+        binding.recyclerView.setVerticalScrollBarEnabled(false);
 
         binding.toolbarlayout.setTitleEnabled(false);
 

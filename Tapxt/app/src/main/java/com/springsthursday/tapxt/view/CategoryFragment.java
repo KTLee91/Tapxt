@@ -3,6 +3,7 @@ package com.springsthursday.tapxt.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ public class CategoryFragment extends Fragment implements CategoryContract.View 
        /* Window window = getActivity().getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
+
+        ((AppCompatActivity)getActivity()).setSupportActionBar(getActivity().findViewById(R.id.toolbar));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         viewModel = new CategoryPresenter(this);
 

@@ -41,6 +41,7 @@ query getUserProfile
                   story {
                     title
                     cover
+                    id
                   }
                 }
               }
@@ -60,6 +61,7 @@ query getUserProfile
                   title
                   story {
                     cover
+                    id
                     title
                   }
                 }

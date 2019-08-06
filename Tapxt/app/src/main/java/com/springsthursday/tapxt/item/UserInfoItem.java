@@ -11,8 +11,11 @@ public class UserInfoItem {
     private int likesCount = 0;
     private int followingCount = 0;
     private int clapsCount = 0;
+    private int createStoryCount = 0;
     private ArrayList<String> tags = new ArrayList<>();
     private ArrayList<FollowItem> follows = new ArrayList<>();
+    private ArrayList<StoryItem> likeItems = new ArrayList<>();
+    private ArrayList<StoryItem> viewedItems = new ArrayList<>();
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -54,6 +57,32 @@ public class UserInfoItem {
         return follows;
     }
 
+    public ArrayList<StoryItem> getLikeItems() {
+        return likeItems;
+    }
+
+    public ArrayList<StoryItem> getViewedItems() {
+        return viewedItems;
+    }
+
+    public String getStoryCount(){
+        return String.valueOf(likeItems.size());
+    }
+
+    public String getFollowingCountForString()
+    {
+        return String.valueOf(getFollowingCount());
+    }
+
+    public String getFollowerCount()
+    {
+        return String.valueOf(follows.size());
+    }
+
+    public String getCreateStoryCount() {
+        return String.valueOf(createStoryCount);
+    }
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
@@ -92,5 +121,17 @@ public class UserInfoItem {
 
     public void setFollows(ArrayList<FollowItem> follows) {
         this.follows = follows;
+    }
+
+    public void setLikeItems(ArrayList<StoryItem> likeItems) {
+        this.likeItems = likeItems;
+    }
+
+    public void setViewedItems(ArrayList<StoryItem> viewedItems) {
+        this.viewedItems = viewedItems;
+    }
+
+    public void setCreateStoryCount(int createStoryCount) {
+        this.createStoryCount = createStoryCount;
     }
 }

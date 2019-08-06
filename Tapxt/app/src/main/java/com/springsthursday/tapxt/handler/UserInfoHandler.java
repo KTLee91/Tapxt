@@ -3,6 +3,7 @@ package com.springsthursday.tapxt.handler;
 import com.apollographql.apollo.api.Response;
 import com.springsthursday.tapxt.GetUserProfileQuery;
 import com.springsthursday.tapxt.item.FollowItem;
+import com.springsthursday.tapxt.item.StoryItem;
 import com.springsthursday.tapxt.item.UserInfoItem;
 import com.springsthursday.tapxt.repository.UserInfo;
 
@@ -41,6 +42,8 @@ public class UserInfoHandler {
 
         ArrayList<String> tags = new ArrayList<>();
         ArrayList<FollowItem> follows = new ArrayList<>();
+        ArrayList<StoryItem> likeItems = new ArrayList<>();
+        ArrayList<StoryItem> viewedItems = new ArrayList();
 
         userInfo.userInfoItem.setNickName(response.data().me().nickname());
         userInfo.userInfoItem.setImageUrl(response.data().me().avatar());
@@ -68,5 +71,67 @@ public class UserInfoHandler {
         }
 
         userInfo.userInfoItem.setFollows(follows);
+
+        for(int t=0; t<response.data().me().likes().size(); t++)
+        {
+            boolean isExistStory = false;
+
+            GetUserProfileQuery.Like likeStory = response.data().me().likes().get(t);
+            StoryItem item = new StoryItem();
+            for(int c=0; c<likeItems.size(); c++) {
+                StoryItem tmp = likeItems.get(c);
+
+                if(tmp.getStoryid().equals(likeStory.episode().story().id()))
+                {
+                    isExistStory = true;
+                }
+            }
+
+            if(isExistStory == false) {
+
+                item.setCover(likeStory.episode().story().cover());
+                item.setTitle(likeStory.episode().story().title());
+                item.setStoryid(likeStory.episode().story().id());
+
+                likeItems.add(item);
+
+            }
+        }
+
+        userInfo.userInfoItem.setLikeItems(likeItems);
+
+        for(int r =0; r<response.data().me().viewed().size(); r++)
+        {
+            boolean isExistStory = false;
+
+            GetUserProfileQuery.Viewed viewed = response.data().me().viewed().get(r);
+            StoryItem item = new StoryItem();
+
+            for(int c=0; c<viewedItems.size(); c++) {
+                StoryItem tmp = viewedItems.get(c);
+
+                if(tmp.getStoryid().equals(viewed.episode().story().id()))
+                {
+                    isExistStory = true;
+                }
+            }
+
+            if(isExistStory == false) {
+
+                item.setCover(viewed.episode().story().cover());
+                item.setTitle(viewed.episode().story().title());
+                item.setStoryid(viewed.episode().story().id());
+
+                viewedItems.add(item);
+            }
+        }
+
+        userInfo.userInfoItem.setViewedItems(viewedItems);
+
+        if(response.data().me().creator() != null)
+        {
+            if(response.data().me().creator().stories() != null)
+                userInfo.userInfoItem.setCreateStoryCount(response.data().me().creator().stories().size());
+        }
     }
 }

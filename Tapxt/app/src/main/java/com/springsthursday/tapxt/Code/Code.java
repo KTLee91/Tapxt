@@ -33,4 +33,10 @@ public class Code {
         public static final int ORDER_BY_RECENT = 1;
         public static final int ORDER_BY_FIRST = 2;
     }
+
+    public class StoryListCategory
+    {
+        public static final int Viewed_STROYS = 1;
+        public static final int LIKED_STORYS = 2;
+    }
 }

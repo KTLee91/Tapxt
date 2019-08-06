@@ -13,7 +13,6 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         android:background="@color/background"
         tools:context=".MainActivity">
 
@@ -32,6 +31,15 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:statusBarScrim="@color/titlebar"
                 app:toolbarId="@+id/toolbar">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:visibility="@{viewModel.loaderVisibility}"
+                    app:lottie_fileName="loader.json"
+                    app:lottie_loop="true" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -94,23 +102,24 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation_view"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:visibility="@{viewModel.loaderVisibility}"
-            app:lottie_fileName="loader.json"
-            app:lottie_loop="true" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            bindMainAdapter="@{viewModel.mainAdapter}"
-            bindMainItems="@{viewModel.allStoryList}"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#171818"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        </android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                bindMainAdapter="@{viewModel.mainAdapter}"
+                bindMainItems="@{viewModel.allStoryList}"
+                android:nestedScrollingEnabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:descendantFocusability="blocksDescendants"
+                android:background="#171818">
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

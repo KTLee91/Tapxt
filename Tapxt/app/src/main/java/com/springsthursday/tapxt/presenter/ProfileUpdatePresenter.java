@@ -33,11 +33,6 @@ public class ProfileUpdatePresenter {
         this.activity = view;
     }
 
-    public void imageClickHandler(View view)
-    {
-        Log.d("cc","Cc");
-    }
-
     public void setUserInfo(String nickName, String imageUrl)
     {
         this.nickName.set(nickName);
@@ -84,5 +79,15 @@ public class ProfileUpdatePresenter {
                     @Override
                     public void onComplete() {}
                 });
+    }
+
+    public void clickComplete(View view)
+    {
+
+    }
+
+    public void imageClickHandler(View view)
+    {
+        activity.openGallery();
     }
 }

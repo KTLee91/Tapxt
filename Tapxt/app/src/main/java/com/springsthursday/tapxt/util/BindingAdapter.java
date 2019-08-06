@@ -44,6 +44,7 @@ import com.springsthursday.tapxt.BindingAdapter.ContentAdapter;
 import com.springsthursday.tapxt.BindingAdapter.ContentCoverAdapter;
 import com.springsthursday.tapxt.BindingAdapter.MainAdapter;
 import com.springsthursday.tapxt.BindingAdapter.MainBannerAdapter;
+import com.springsthursday.tapxt.BindingAdapter.StoryListAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.item.BannerItem;
 import com.springsthursday.tapxt.item.CommentItem;
@@ -58,21 +59,6 @@ public class BindingAdapter {
             recyclerView.setAdapter(adapter.get());
     }
 
-    /*@android.databinding.BindingAdapter("bind_items")
-    public static void setBindItems(final RecyclerView recyclerView, ObservableArrayList items) {
-        if (items != null) {
-            final ContentAdapter adapter = (ContentAdapter) recyclerView.getAdapter();
-            adapter.setItems(items);
-            ((DefaultItemAnimator) recyclerView.getItemAnimator()).setAddDuration(0);
-
-            recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                public void onGlobalLayout() {
-                    recyclerView.scrollToPosition(adapter.getItemCount() -1);
-                    recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            });
-        }
-    }*/
 
     @android.databinding.BindingAdapter("bind_background")
     public static void setBindBackground(ImageView imageView, String background) {
@@ -171,4 +157,16 @@ public class BindingAdapter {
             recyclerView.setAdapter(adapter.get());
     }
 
+    @android.databinding.BindingAdapter("bindStoryListItems")
+    public static void setBindingStoryListAdapter(final RecyclerView recyclerView, ObservableField item) {
+        if (item != null) {
+            final StoryListAdapter adapter = (StoryListAdapter) recyclerView.getAdapter();
+            adapter.setItems((ArrayList<StoryItem>)item.get());
+        }
+    }
+    @android.databinding.BindingAdapter("bindStoryListAdapter")
+    public static void setBindingStoryListItems(RecyclerView recyclerView, ObservableField<StoryListAdapter> adapter) {
+        if (adapter != null)
+            recyclerView.setAdapter(adapter.get());
+    }
 }
