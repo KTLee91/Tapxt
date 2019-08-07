@@ -15,5 +15,5 @@ public interface UploadImageInterface {
 
         @Multipart
         @POST("api/upload")
-        Call<ResponseBody> uploadFile(@Part MultipartBody.Part file);
+        Call<UploadObject> uploadFile(@Part MultipartBody.Part file);
 }

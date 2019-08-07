@@ -3,13 +3,13 @@ package com.springsthursday.tapxt.util;
 import com.google.gson.annotations.SerializedName;
 
 public class UploadObject {
-    @SerializedName("location")
-    private String location;
+    @SerializedName("key")
+    private String key;
 
-    public UploadObject(String location) {
-        this.location = location;
+    public UploadObject(String key) {
+        this.key = key;
     }
-    public String getAvatar() {
-        return location;
+    public String getKey() {
+        return key;
     }
 }

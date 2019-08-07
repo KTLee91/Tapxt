@@ -307,6 +307,13 @@ query seeComments($id : String!){
     }
 }
 
+query seeVersion($first : Int!, $skip : Int!){
+	seeVersions(first:$first, skip:$skip){
+    id
+    value
+  	type
+  }
+}
 
 
 

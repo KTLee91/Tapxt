@@ -136,17 +136,17 @@ public class ProfileUpdatePresenter {
                     .build();
 
             UploadImageInterface uploadImage = retrofit.create(UploadImageInterface.class);
-            Call<ResponseBody> fileUpload = uploadImage.uploadFile(fileToUpload);
-            fileUpload.enqueue(new Callback<ResponseBody>() {
+            Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload);
+            fileUpload.enqueue(new Callback<UploadObject>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                    updateUserProfile();
+                public void onResponse(Call<UploadObject> call, retrofit2.Response<UploadObject> response) {
+                    //updateUserProfile();
                     //imageUrl =
-                    Log.d("Success", "Success File Upload");
+                    Log.d("Success", response.body().getKey());
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(Call<UploadObject> call, Throwable t) {
                     Log.d("Fail", "Failed File Upload");
                 }
             });

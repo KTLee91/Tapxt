@@ -11,6 +11,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.springsthursday.tapxt.GetUserProfileQuery;
+import com.springsthursday.tapxt.SeeVersionQuery;
 import com.springsthursday.tapxt.constract.IntroContract;
 import com.springsthursday.tapxt.constract.LoginContract;
 import com.springsthursday.tapxt.database.DatabaseManager;
@@ -58,6 +59,61 @@ public class IntroPresenter {
         } else {
             activity.contextLoginActivity();
         }
+    }
+
+    public void checkVersion(String deviceVersion)
+    {
+        ApolloClient apolloClienmt = ApolloClientObject.getApolloClient();
+
+        SeeVersionQuery query = SeeVersionQuery.builder().first(1).skip(0).build();
+        ApolloCall<SeeVersionQuery.Data> apolloCall1 = apolloClienmt.query(query);
+        Observable<Response<SeeVersionQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
+
+        disposable = new CompositeDisposable();
+
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<SeeVersionQuery.Data>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(Response<SeeVersionQuery.Data> dataResponse) {
+
+                        if (dataResponse.data() == null) {
+                            return;
+                        }
+                        SeeVersionQuery.SeeVersion version = dataResponse.data().seeVersions().get(0);
+
+                        if(version.value().equals(deviceVersion))
+                        {
+                            loadData();
+                        }
+                        else
+                        {
+                            if(version.type().equals("majar"))
+                            {
+                                //반드시 업데이트
+                                activity.confirmVersionDialog(true);
+                            }
+                            else
+                            {
+                                activity.confirmVersionDialog(false);
+                                //선택적 업데이트
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     public void getUserInfo() {

@@ -3,13 +3,16 @@ package com.springsthursday.tapxt.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
     private SharedPreferences.Editor editor;
     private IntroPresenter viewModel;
     private ActivityIntroBinding binding;
+    private String device_version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,13 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
 
         if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
             showNetworkFailDialog();
+
+        try {
+            String device_version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            Log.d("version", device_version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
@@ -62,6 +73,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
         AppSettingIngo.getInstance().setAutoSpeed(preferences.getInt("AutoSpeed", 1000));
 
         viewModel.loadData();
+        //viewModel.checkVersion(device_version);
     }
 
     @Override
@@ -92,6 +104,40 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
                 finish();
             }
         });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void confirmVersionDialog(boolean isMajar) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("업데이트").setMessage("최신 버전의 어플리케이션이 있습니다");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("업데이트", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int id)
+            {
+                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+                finish();
+            }
+        });
+
+        if(isMajar == false) {
+            builder.setNegativeButton("다음에 할게요", new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    viewModel.loadData();
+                }
+            });
+        }
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
