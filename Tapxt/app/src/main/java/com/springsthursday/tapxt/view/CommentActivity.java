@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.springsthursday.tapxt.BindingAdapter.CommentAdapter;
 import com.springsthursday.tapxt.R;
@@ -25,6 +26,7 @@ import com.springsthursday.tapxt.databinding.ActivityCommentBinding;
 import com.springsthursday.tapxt.item.CommentItem;
 import com.springsthursday.tapxt.presenter.CommentPresenter;
 import com.springsthursday.tapxt.repository.CommentRepository;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 public class CommentActivity extends AppCompatActivity implements CommentContract.View {
 
@@ -45,6 +47,9 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
 
         Intent intent = getIntent();
         episodeID = intent.getStringExtra("EpisodeID");
+
+        if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
+            Toast.makeText(getApplicationContext(), "네트워크 상태가 불안정합니다",Toast.LENGTH_LONG).show();
 
         this.setUpView();
     }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.springsthursday.tapxt.Code.Code;
@@ -21,6 +22,7 @@ import com.springsthursday.tapxt.databinding.ActivityMainBinding;
 import com.springsthursday.tapxt.presenter.MainPresenter;
 import com.springsthursday.tapxt.repository.StoryRepository;
 import com.springsthursday.tapxt.repository.UserInfo;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
 
@@ -44,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         getWindow().setStatusBarColor(getColor(R.color.titlebar));
 
         setContentView(R.layout.activity_main);
+
+        if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
+            Toast.makeText(getApplicationContext(), "네트워크 상태가 불안정합니다",Toast.LENGTH_LONG).show();
 
         this.setUpView();
     }

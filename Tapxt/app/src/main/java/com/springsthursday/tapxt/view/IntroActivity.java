@@ -1,5 +1,6 @@
 package com.springsthursday.tapxt.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -7,9 +8,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieDrawable;
@@ -22,6 +26,7 @@ import com.springsthursday.tapxt.database.DatabaseManager;
 import com.springsthursday.tapxt.presenter.ContentPresenter;
 import com.springsthursday.tapxt.presenter.IntroPresenter;
 import com.springsthursday.tapxt.repository.AppSettingIngo;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 public class IntroActivity extends AppCompatActivity implements IntroContract.View {
 
@@ -39,6 +44,9 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.activity_intro);
+
+        if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
+            showNetworkFailDialog();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
@@ -68,5 +76,31 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void showNetworkFailDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("네트워크 오류").setMessage("네트워크 상태가 불안정합니다");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int id)
+            {
+                finish();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(viewModel.disposable != null)
+            viewModel.disposable.dispose();
     }
 }

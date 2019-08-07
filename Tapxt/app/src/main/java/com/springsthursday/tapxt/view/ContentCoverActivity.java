@@ -12,12 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ContentCoverContract;
 import com.springsthursday.tapxt.databinding.ActivityContentcoverBinding;
 import com.springsthursday.tapxt.item.StoryItem;
 import com.springsthursday.tapxt.presenter.ContentCoverPresenter;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 public class ContentCoverActivity extends AppCompatActivity implements ContentCoverContract.View {
 
@@ -38,6 +40,9 @@ public class ContentCoverActivity extends AppCompatActivity implements ContentCo
         Intent intent = getIntent();
 
         storyID  = intent.getStringExtra("Story");
+
+        if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
+            Toast.makeText(getApplicationContext(), "네트워크 상태가 불안정합니다",Toast.LENGTH_LONG).show();
 
         this.setUpView();
     }

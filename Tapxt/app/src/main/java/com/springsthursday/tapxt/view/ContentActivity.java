@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ContentContract;
@@ -32,6 +33,7 @@ import com.springsthursday.tapxt.listener.RecyclerTouchListener;
 import com.springsthursday.tapxt.listener.RecyclerViewClickListener;
 import com.springsthursday.tapxt.presenter.ContentPresenter;
 import com.springsthursday.tapxt.repository.AppSettingIngo;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,6 +64,9 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
         contentID = intent.getStringExtra("EpisodeID");
 
         Log.d("EpisodeID", contentID);
+
+        if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
+            Toast.makeText(getApplicationContext(), "네트워크 상태가 불안정합니다",Toast.LENGTH_LONG).show();
 
         this.setUpView();
     }

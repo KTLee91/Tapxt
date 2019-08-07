@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.springsthursday.tapxt.BindingAdapter.StoryListPagerAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ProfileContract;
 import com.springsthursday.tapxt.databinding.FragmentProfileBinding;
 import com.springsthursday.tapxt.presenter.ProfilePresenter;
+import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
 public class ProfileFragment extends Fragment implements ProfileContract.View {
     private ProfilePresenter viewModel;
@@ -35,6 +37,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.View {
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        if (!NetWorkBrodcastReceiver.getInstance(getActivity().getApplicationContext()).isOnline())
+            Toast.makeText(getActivity().getApplicationContext(), "네트워크 상태가 불안정합니다",Toast.LENGTH_LONG).show();
 
         viewModel = new ProfilePresenter(this);
         FragmentProfileBinding binding = DataBindingUtil.getBinding(getView());

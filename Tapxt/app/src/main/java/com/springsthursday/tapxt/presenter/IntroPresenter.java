@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 public class IntroPresenter {
 
     private Context context;
-    private CompositeDisposable disposable;
+    public CompositeDisposable disposable;
     private IntroContract.View activity;
 
     public IntroPresenter(Context context, IntroContract.View activity) {
