@@ -30,11 +30,4 @@ public class Validation {
             return true;
         return false;
     }
-
-    public static boolean isDuplicatedNickName(String nickName)
-    {
-        if(nickName == UserInfo.getInstance().userInfoItem.getNickName())
-            return true;
-        return false;
-    }
 }

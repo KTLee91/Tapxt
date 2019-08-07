@@ -19,5 +19,5 @@
     <!--Home Fragment -->
     <string name="homeAppbarTitle">홈</string>
 
-
+    <string name="read_file">This app needs access to your file storage so that it can read photos.</string>
 </resources>
