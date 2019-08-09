@@ -78,9 +78,8 @@ public class ProfileUpdatePresenter {
 
     public void updateUserProfile() {
 
-        if(Validation.isEmptyNickName(editNickName.get()))
-        {
-            Toast.makeText(context,"닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
+        if (Validation.isEmptyNickName(editNickName.get())) {
+            Toast.makeText(context, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -126,33 +125,57 @@ public class ProfileUpdatePresenter {
         if (uri != null) {
             File file = new File(activity.getRealPath(uri));
 
+            /*Interceptor interceptor = new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
+                    String token = UserInfo.getInstance().userInfoItem.getToken();
+                    Request newRequest;
+                    newRequest = chain.request();
+                    return chain.proceed(newRequest);
+                }
+            };
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.interceptors().add(interceptor);
+            OkHttpClient client = builder.build();*/
+
+            Interceptor interceptor = new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
+                    Request.Builder requestBuilder = chain.request().newBuilder();
+                    requestBuilder.header("Content-Type", "multipart/form-data");
+                    return chain.proceed(requestBuilder.build());
+
+                }
+            };
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.interceptors().add(interceptor);
+            OkHttpClient client = builder.build();
+
+
+
             RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), mFile);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://tapxt-dev.herokuapp.com/")
                     .addConverterFactory(GsonConverterFactory.create())
-                    //.client(client)
+                    .client(client)
                     .build();
 
             UploadImageInterface uploadImage = retrofit.create(UploadImageInterface.class);
-            Call<UploadObject> fileUpload = uploadImage.uploadFile(fileToUpload);
-            fileUpload.enqueue(new Callback<UploadObject>() {
+            Call<ResponseBody> fileUpload = uploadImage.uploadFile(fileToUpload);
+            fileUpload.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<UploadObject> call, retrofit2.Response<UploadObject> response) {
-                    //updateUserProfile();
-                    //imageUrl =
-                    Log.d("Success", response.body().getKey());
+                public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 }
 
                 @Override
-                public void onFailure(Call<UploadObject> call, Throwable t) {
-                    Log.d("Fail", "Failed File Upload");
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                 }
             });
-        }
-        else
-        {
+        } else {
             this.updateUserProfile();
         }
     }

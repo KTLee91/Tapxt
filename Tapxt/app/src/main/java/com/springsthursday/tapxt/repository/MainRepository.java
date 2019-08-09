@@ -1,6 +1,7 @@
 package com.springsthursday.tapxt.repository;
 
 import com.apollographql.apollo.api.Response;
+import com.springsthursday.tapxt.SeeAllStoryListQuery;
 import com.springsthursday.tapxt.SeeFeedQuery;
 import com.springsthursday.tapxt.item.BannerItem;
 import com.springsthursday.tapxt.item.EpisodeItem;
@@ -9,7 +10,8 @@ import com.springsthursday.tapxt.item.StoryItem;
 import java.util.ArrayList;
 
 public class MainRepository {
-    public static MainRepository mainRepository = new MainRepository();
+    private static MainRepository mainRepository ;
+    private ArrayList<ArrayList<StoryItem>> items = new ArrayList<>();
 
     public static MainRepository getInstance()
     {
@@ -23,7 +25,6 @@ public class MainRepository {
 
     public ArrayList<ArrayList<StoryItem>> loadFeedItemList(Response<SeeFeedQuery.Data> dataResponse)
     {
-        ArrayList<ArrayList<StoryItem>> items = new ArrayList();
 
         for(int i=0; i<dataResponse.data().seeFeed().size(); i++)
         {
@@ -52,4 +53,38 @@ public class MainRepository {
 
         return items;
     }
+
+    public ArrayList<ArrayList<StoryItem>> loadAllStroyList(Response<SeeAllStoryListQuery.Data> dataResponse)
+    {
+        ArrayList<StoryItem> allStoryList = new ArrayList<>();
+
+        for(int i =0 ; i<dataResponse.data().seeStories().size(); i++)
+        {
+            StoryItem item = new StoryItem();
+            SeeAllStoryListQuery.SeeStory story = dataResponse.data().seeStories().get(i);
+
+            item.setFeedTag("이달의 신작");
+            item.setStoryid(story.id());
+            item.setCover(story.cover());
+            item.setTitle(story.title());
+
+            allStoryList.add(item);
+        }
+
+        items.add(0, allStoryList);
+
+        return items;
+    }
+
+    public ArrayList<ArrayList<StoryItem>> getItems()
+    {
+        return items;
+    }
+
+    public void dispose()
+    {
+        if(items != null)
+            items.clear();
+    }
+
 }

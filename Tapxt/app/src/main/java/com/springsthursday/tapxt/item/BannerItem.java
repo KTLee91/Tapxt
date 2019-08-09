@@ -2,6 +2,7 @@ package com.springsthursday.tapxt.item;
 
 public class BannerItem {
     private String id = "";
+    private String storyID = "";
     private String title = "";
     private String description = "";
     private String url = "";
@@ -27,6 +28,10 @@ public class BannerItem {
         return thumb;
     }
 
+    public String getStoryID() {
+        return storyID;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -45,5 +50,9 @@ public class BannerItem {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    public void setStoryID(String storyID) {
+        this.storyID = storyID;
     }
 }

@@ -1,85 +1,50 @@
 package com.springsthursday.tapxt.presenter;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.bumptech.glide.request.transition.Transition;
 import com.springsthursday.tapxt.Code.Code;
-import com.springsthursday.tapxt.SeeEpisodeQuery;
+import com.springsthursday.tapxt.SeeEpisodeMutation;
 import com.springsthursday.tapxt.ToggleEpisodeLikeMutation;
-import com.springsthursday.tapxt.ToggleFollowMutation;
 import com.springsthursday.tapxt.BindingAdapter.ContentAdapter;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.ContentContract;
 import com.springsthursday.tapxt.item.ContentItem;
 import com.springsthursday.tapxt.listener.ContentListener;
-import com.springsthursday.tapxt.repository.CommentRepository;
 import com.springsthursday.tapxt.repository.ContentRepostory;
 import com.springsthursday.tapxt.util.AnimationUtil;
 import com.springsthursday.tapxt.util.ApolloClientObject;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -87,8 +52,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
 public class ContentPresenter {
+    //region Observable Field
     public ObservableField<ContentAdapter> adapter;
     public ObservableInt loderVisibility;
     public ObservableField<String> background;
@@ -101,6 +66,7 @@ public class ContentPresenter {
     public ObservableField<String> nickName;
     public ObservableField<Integer> nextBtnVisibility;
     public ObservableField<Integer> autoLoadViewVisibility;
+    //endregion
 
     //region General Field
     private ArrayList<ContentItem> contentList;
@@ -129,8 +95,10 @@ public class ContentPresenter {
     //endregion
 
     public ContentPresenter(Context context, ContentContract.View view, String contentID) {
+        //region Initialize Data
         this.context = context;
         this.contentID = contentID;
+
         activity = view;
         currentBackgroundSound = "";
 
@@ -153,6 +121,7 @@ public class ContentPresenter {
 
         adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
         adapter.get().setHasStableIds(true);
+        //endregion
     }
 
     public void setRecyclerView(RecyclerView recyclerView) {
@@ -195,22 +164,22 @@ public class ContentPresenter {
 
         ApolloClient apolloClient = ApolloClientObject.getApolloClient();
 
-        SeeEpisodeQuery query = SeeEpisodeQuery.builder().id(contentID).build();
-        ApolloCall<SeeEpisodeQuery.Data> apolloCall1 = apolloClient.query(query);
-        Observable<Response<SeeEpisodeQuery.Data>> observable = Rx2Apollo.from(apolloCall1);
+        SeeEpisodeMutation mutate = SeeEpisodeMutation.builder().id(contentID).build();
+        ApolloCall<SeeEpisodeMutation.Data> apolloCall1 = apolloClient.mutate(mutate);
+        Observable<Response<SeeEpisodeMutation.Data>> observable = Rx2Apollo.from(apolloCall1);
 
         disposable = new CompositeDisposable();
 
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<SeeEpisodeQuery.Data>>() {
+                .subscribe(new Observer<Response<SeeEpisodeMutation.Data>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposable.add(d);
                     }
 
                     @Override
-                    public void onNext(Response<SeeEpisodeQuery.Data> dataResponse) {
+                    public void onNext(Response<SeeEpisodeMutation.Data> dataResponse) {
                         if (dataResponse == null) {
                             showExceptionErrorMessage();
                             loderVisibility.set(View.GONE);
@@ -222,33 +191,29 @@ public class ContentPresenter {
                             return;
                         }
 
-                        storyTitle.set(dataResponse.data().seeEpisode().story().title());
-                        episodeTitle.set(dataResponse.data().seeEpisode().title());
-                        isLiked = dataResponse.data().seeEpisode().isLiked();
-                        episodeID = dataResponse.data().seeEpisode().id();
-                        int nextSequence = dataResponse.data().seeEpisode().sequence() + 1;
+                        storyTitle.set(dataResponse.data().viewingEpisode().story().title());
+                        episodeTitle.set(dataResponse.data().viewingEpisode().title());
+                        isLiked = dataResponse.data().viewingEpisode().isLiked();
+                        episodeID = dataResponse.data().viewingEpisode().id();
+                        int nextSequence = dataResponse.data().viewingEpisode().sequence() + 1;
 
-                        avatar.set(dataResponse.data().seeEpisode().creator().avatar());
-                        nickName.set(dataResponse.data().seeEpisode().creator().nickname());
-                        cover.set(dataResponse.data().seeEpisode().story().cover());
+                        avatar.set(dataResponse.data().viewingEpisode().creator().avatar());
+                        nickName.set(dataResponse.data().viewingEpisode().creator().nickname());
+                        cover.set(dataResponse.data().viewingEpisode().story().cover());
 
-                        for (int j = 0; j < dataResponse.data().seeEpisode().story().episodes().size(); j++) {
-                            if (nextSequence == dataResponse.data().seeEpisode().story().episodes().get(j).sequence())
-                                nextEpisodeID = dataResponse.data().seeEpisode().story().episodes().get(j).id();
+                        for (int j = 0; j < dataResponse.data().viewingEpisode().story().episodes().size(); j++) {
+                            if (nextSequence == dataResponse.data().viewingEpisode().story().episodes().get(j).sequence())
+                                nextEpisodeID = dataResponse.data().viewingEpisode().story().episodes().get(j).id();
                         }
 
                         contentList = ContentRepostory.getInstance().LoadContentList(dataResponse);
 
-                        //실제 서버 연동 코드
-                       /* for(int k =0; k < dataResponse.data().seeEpisode().scenes().size(); k++)
-                        {
-                            SeeEpisodeQuery.Scene scene = dataResponse.data().seeEpisode().scenes().get(k);
-                            sceneBackgroudSound.put(String.valueOf(k+1), scene.sceneProperty().sound());
-                        }*/
 
-                        sceneBackgroudSound.put(String.valueOf(1), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio1.mp3");
-                        sceneBackgroudSound.put(String.valueOf(2), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio2.mp3");
-                        sceneBackgroudSound.put(String.valueOf(3), "https://s3.ap-northeast-2.amazonaws.com/tapxt.src/audio3.mp3");
+                        for(int k =0; k < dataResponse.data().viewingEpisode().scenes().size(); k++)
+                        {
+                            SeeEpisodeMutation.Scene scene = dataResponse.data().viewingEpisode().scenes().get(k);
+                            sceneBackgroudSound.put(String.valueOf(k+1), scene.sceneProperty().sound());
+                        }
 
                         activity.setTouchListener();
 

@@ -20,6 +20,7 @@ import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.MainContract;
 import com.springsthursday.tapxt.databinding.ActivityMainBinding;
 import com.springsthursday.tapxt.presenter.MainPresenter;
+import com.springsthursday.tapxt.repository.MainRepository;
 import com.springsthursday.tapxt.repository.StoryRepository;
 import com.springsthursday.tapxt.repository.UserInfo;
 import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
@@ -144,5 +145,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 );
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainRepository.getInstance().dispose();
     }
 }

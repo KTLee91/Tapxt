@@ -53,8 +53,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
             showNetworkFailDialog();
 
         try {
-            String device_version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            Log.d("version", device_version);
+            device_version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -72,8 +71,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
 
         AppSettingIngo.getInstance().setAutoSpeed(preferences.getInt("AutoSpeed", 1000));
 
-        viewModel.loadData();
-        //viewModel.checkVersion(device_version);
+        viewModel.checkVersion(device_version);
     }
 
     @Override
@@ -121,6 +119,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
             public void onClick(DialogInterface dialog, int id)
             {
                 final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                 } catch (android.content.ActivityNotFoundException anfe) {

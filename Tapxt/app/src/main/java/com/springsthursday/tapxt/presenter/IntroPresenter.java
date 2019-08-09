@@ -87,7 +87,7 @@ public class IntroPresenter {
                         }
                         SeeVersionQuery.SeeVersion version = dataResponse.data().seeVersions().get(0);
 
-                        if(version.value().equals(deviceVersion))
+                        if(version.version().equals(deviceVersion))
                         {
                             loadData();
                         }

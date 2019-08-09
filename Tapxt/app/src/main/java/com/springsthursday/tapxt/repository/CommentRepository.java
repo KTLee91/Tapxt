@@ -2,7 +2,6 @@ package com.springsthursday.tapxt.repository;
 
 import com.apollographql.apollo.api.Response;
 import com.springsthursday.tapxt.SeeCommentsQuery;
-import com.springsthursday.tapxt.SeeEpisodeQuery;
 import com.springsthursday.tapxt.item.CommentItem;
 
 import java.util.ArrayList;

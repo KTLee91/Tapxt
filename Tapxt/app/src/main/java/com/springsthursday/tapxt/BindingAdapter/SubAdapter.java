@@ -19,10 +19,9 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubViewHolder> {
     private ArrayList<StoryItem> storyItems;
     private StoryClickListener listener;
 
-    public SubAdapter(ArrayList<StoryItem> items, StoryClickListener listener)
+    public SubAdapter( StoryClickListener listener)
     {
         this.listener = listener;
-        storyItems = items;
     }
 
     @NonNull
@@ -44,6 +43,12 @@ public class SubAdapter extends RecyclerView.Adapter<SubAdapter.SubViewHolder> {
     public int getItemCount() {
         if(storyItems == null) return 0;
         else return storyItems.size();
+    }
+
+    public void setItems(ArrayList<StoryItem> items)
+    {
+        storyItems = items;
+        notifyDataSetChanged();
     }
 
     public class SubViewHolder extends RecyclerView.ViewHolder

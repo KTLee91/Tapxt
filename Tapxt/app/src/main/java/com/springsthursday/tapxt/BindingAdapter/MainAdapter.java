@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +37,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         return new MainAdapter.MainViewHolder(view);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder viewHolder, int position) {
@@ -44,7 +49,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         viewHolder.binding.recyclerview.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         viewHolder.binding.recyclerview.setNestedScrollingEnabled (false);
         viewHolder.binding.recyclerview.setVerticalScrollBarEnabled(false);
-        viewHolder.binding.recyclerview.setAdapter(new SubAdapter(AllStoryList.get(position), listener));
+        viewHolder.binding.recyclerview.setItemAnimator(new DefaultItemAnimator());
+
+        ((DefaultItemAnimator) viewHolder.binding.recyclerview.getItemAnimator()).setChangeDuration(2000);
+        ((DefaultItemAnimator) viewHolder.binding.recyclerview.getItemAnimator()).setAddDuration(2000);
+        SubAdapter adapter = new SubAdapter(listener);
+        viewHolder.binding.recyclerview.setAdapter(adapter);
+        adapter.setItems(AllStoryList.get(position));
     }
 
     @Override

@@ -32,6 +32,9 @@ public class BannerRepository {
             BannerItem bannerItem = new BannerItem();
             InqueryBannersQuery.SeeBanner banner = dataResponse.data().seeBanners().get(i);
 
+            if(banner.story() != null)
+                bannerItem.setStoryID(banner.story().id());
+
             bannerItem.setId(banner.id());
             bannerItem.setTitle(banner.title());
             bannerItem.setDescription(banner.description());

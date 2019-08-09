@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.HomeContract;
 import com.springsthursday.tapxt.databinding.FragmentHomeBinding;
@@ -30,8 +33,6 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        Window window = getActivity().getWindow();
-
         viewModel = new HomePresenter(this, getActivity().getApplicationContext());
 
         FragmentHomeBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
@@ -58,6 +59,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         binding.recyclerView.setLayoutManager(manager);
         binding.recyclerView.setHorizontalScrollBarEnabled(false);
         binding.recyclerView.setVerticalScrollBarEnabled(false);
+        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setChangeDuration(2000);
+        ((DefaultItemAnimator) binding.recyclerView.getItemAnimator()).setAddDuration(2000);
 
         binding.toolbarlayout.setTitleEnabled(false);
 
@@ -72,7 +77,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         });
 
         viewModel.loadMainBanner();
-        viewModel.loadFeed();
+        viewModel.loadAllStoryList();
     }
 
     @Override
@@ -107,5 +112,16 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     public void addIndicator() {
         binding.indicator.setViewPager(binding.mainBanner);
         binding.mainBanner.getAdapter().registerDataSetObserver(binding.indicator.getDataSetObserver());
+    }
+
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        if(viewModel.disposable != null)
+        {
+            viewModel.disposable.dispose();
+        }
     }
 }

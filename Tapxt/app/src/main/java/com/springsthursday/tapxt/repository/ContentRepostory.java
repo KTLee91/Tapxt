@@ -2,7 +2,7 @@ package com.springsthursday.tapxt.repository;
 import com.apollographql.apollo.api.Response;
 import com.springsthursday.tapxt.Code.Code;
 
-import com.springsthursday.tapxt.SeeEpisodeQuery;
+import com.springsthursday.tapxt.SeeEpisodeMutation;
 import com.springsthursday.tapxt.item.ContentItem;
 import com.springsthursday.tapxt.util.ContentUtil;
 
@@ -42,7 +42,7 @@ public class ContentRepostory {
         contextPreSceneTypeItem = contextSceneItem;
     }
 
-    public ArrayList<ContentItem> LoadContentList(Response<SeeEpisodeQuery.Data> dataResponse)
+    public ArrayList<ContentItem> LoadContentList(Response<SeeEpisodeMutation.Data> dataResponse)
     {
         ArrayList<ContentItem> contentList = new ArrayList<>();
 
@@ -52,17 +52,17 @@ public class ContentRepostory {
         String prePosition = "";
 
         //region Initialize Episode Values
-        episodeTitle = dataResponse.data().seeEpisode().title();
-        storyTitle = dataResponse.data().seeEpisode().story().title();
+        episodeTitle = dataResponse.data().viewingEpisode().title();
+        storyTitle = dataResponse.data().viewingEpisode().story().title();
         //endregion
 
-        for(int i = 0 ; i < dataResponse.data().seeEpisode().scenes().size(); i++)
+        for(int i = 0 ; i < dataResponse.data().viewingEpisode().scenes().size(); i++)
         {
-            SeeEpisodeQuery.Scene scene = dataResponse.data().seeEpisode().scenes().get(i);
+            SeeEpisodeMutation.Scene scene = dataResponse.data().viewingEpisode().scenes().get(i);
 
             for(int k = 0; k < scene.contents().size(); k++)
             {
-                SeeEpisodeQuery.Content content = scene.contents().get(k);
+                SeeEpisodeMutation.Content content = scene.contents().get(k);
 
                 item = new ContentItem();
 

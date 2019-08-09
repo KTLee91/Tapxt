@@ -118,7 +118,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else if(holder instanceof ContentViewHolder) {
             if(item.getContentType() == Code.ContentType.LEFT_SERIES_CONTENT)
             {
-                ((ContentViewHolder) holder).binding.imageView3.setVisibility(View.GONE);
+                ((ContentViewHolder) holder).binding.avatar.setVisibility(View.GONE);
                 ((ContentViewHolder) holder).binding.name.setVisibility(View.GONE);
             }
 

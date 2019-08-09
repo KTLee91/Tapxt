@@ -122,7 +122,7 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int period = seekBar.getMax() - seekBar.getProgress();
 
-                editor.putInt("AutoSpeed", period);
+                editor.putInt("AutoSpeed", seekBar.getProgress());
                 editor.apply();
 
                 AppSettingIngo.getInstance().setAutoSpeed(seekBar.getProgress());
@@ -255,7 +255,7 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
 
         @Override
         public void onLongClick() {
-            setTimer(true, false,AppSettingIngo.getInstance().getautoSpeed());
+            setTimer(true, false, binding.autoLoadSpeed.getMax() - AppSettingIngo.getInstance().getautoSpeed());
         }
     }
 

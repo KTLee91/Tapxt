@@ -90,4 +90,19 @@
     <dimen name="EpisodeDialogContentLeft">12dp</dimen>
     <dimen name="EpisodeDialogContentBottom">12dp</dimen>
     <dimen name="EpisodeDialoglistBetweenComment">18dp</dimen>
+
+    <!-- Content -->
+    <dimen name="TextContentTopMargin">6dp</dimen>
+    <dimen name="TextCenterContentTopMargin">40dp</dimen>
+    <dimen name="TextContentLeftMargin">6dp</dimen>mn
+    <dimen name="TextContentRightMargin">6dp</dimen>
+
+
+    <dimen name="distanceAvatarNNickName">6dp</dimen>
+    <dimen name="distanceNickNameNContent">2dp</dimen>
+    <dimen name="TextSideMargin">72dp</dimen>
+    <dimen name="TextLeftGoneMargin">45dp</dimen>
+    <dimen name="TextRightGoneMargin">42dp</dimen>
+
+    <dimen name="ContentNickNameSize">12dp</dimen>
 </resources>

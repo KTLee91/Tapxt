@@ -4,11 +4,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.springsthursday.tapxt.Code.Code;
-import com.springsthursday.tapxt.SeeEpisodeQuery;
+import com.springsthursday.tapxt.SeeEpisodeMutation;
 
 public class ContentUtil {
 
-    public static int getTextContentType(SeeEpisodeQuery.Content content, boolean isContextScene, String preName, String prePosition)
+    public static int getTextContentType(SeeEpisodeMutation.Content content, boolean isContextScene, String preName, String prePosition)
     {
         if(content.contentPosition().position().equals("center"))
         {
@@ -38,7 +38,7 @@ public class ContentUtil {
         }
     }
 
-    public static int getImageContentType(SeeEpisodeQuery.Content content, boolean isContextScene, String preName, String prePosition)
+    public static int getImageContentType(SeeEpisodeMutation.Content content, boolean isContextScene, String preName, String prePosition)
     {
         if(content.contentPosition().position().equals("center"))
         {
