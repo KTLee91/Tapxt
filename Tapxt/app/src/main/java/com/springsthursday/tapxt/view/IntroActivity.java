@@ -28,6 +28,7 @@ import com.springsthursday.tapxt.item.UserInfoItem;
 import com.springsthursday.tapxt.database.DatabaseManager;
 import com.springsthursday.tapxt.presenter.ContentPresenter;
 import com.springsthursday.tapxt.presenter.IntroPresenter;
+import com.springsthursday.tapxt.repository.AppInfoRepository;
 import com.springsthursday.tapxt.repository.AppSettingIngo;
 import com.springsthursday.tapxt.util.NetWorkBrodcastReceiver;
 
@@ -45,6 +46,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
         super.onCreate(savedInstanceState);
 
         Window window = getWindow();
+        getWindow().setNavigationBarColor(getColor(R.color.background));
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.activity_intro);
@@ -54,6 +56,7 @@ public class IntroActivity extends AppCompatActivity implements IntroContract.Vi
 
         try {
             device_version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            AppInfoRepository.getInstance().setVersion(device_version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

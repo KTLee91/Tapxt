@@ -1,5 +1,6 @@
 package com.springsthursday.tapxt.presenter;
 
+import android.content.Context;
 import android.databinding.ObservableField;
 import android.view.View;
 
@@ -34,7 +35,7 @@ public class ProfilePresenter {
 
     public ProfilePresenter(ProfileContract.View view)
     {
-       progressBarVisibility.set(View.GONE);
+        progressBarVisibility.set(View.GONE);
         this.activity = view;
 
         nickName.set(UserInfo.getInstance().userInfoItem.getNickName());
@@ -49,10 +50,5 @@ public class ProfilePresenter {
     {
         this.nickName.set(nickName);
         this.imageUrl.set(imageUrl);
-    }
-
-    public void logout(View view)
-    {
-        DatabaseManager.getInstance(activity.getContext()).updateNullToken(UserInfo.getInstance().userInfoItem.getPhoneNumber());
     }
 }

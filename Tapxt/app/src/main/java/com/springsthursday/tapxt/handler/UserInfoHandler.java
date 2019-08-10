@@ -94,36 +94,41 @@ public class UserInfoHandler {
                 item.setStoryid(likeStory.episode().story().id());
 
                 likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+                likeItems.add(item);
+
 
             }
         }
 
         userInfo.userInfoItem.setLikeItems(likeItems);
 
-        for(int r =0; r<response.data().me().viewed().size(); r++)
+        for(int r =0; r<response.data().me().withoutDuplicationViewed().size(); r++)
         {
-            boolean isExistStory = false;
+            GetUserProfileQuery.WithoutDuplicationViewed item = response.data().me().withoutDuplicationViewed().get(r);
+            StoryItem storyItem = new StoryItem();
 
-            GetUserProfileQuery.Viewed viewed = response.data().me().viewed().get(r);
-            StoryItem item = new StoryItem();
+            storyItem.setCover(item.story().cover());
+            storyItem.setTitle(item.story().title());
+            storyItem.setStoryid(item.story().id());
 
-            for(int c=0; c<viewedItems.size(); c++) {
-                StoryItem tmp = viewedItems.get(c);
-
-                if(tmp.getStoryid().equals(viewed.episode().story().id()))
-                {
-                    isExistStory = true;
-                }
-            }
-
-            if(isExistStory == false) {
-
-                item.setCover(viewed.episode().story().cover());
-                item.setTitle(viewed.episode().story().title());
-                item.setStoryid(viewed.episode().story().id());
-
-                viewedItems.add(item);
-            }
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
+            viewedItems.add(storyItem);
         }
 
         userInfo.userInfoItem.setViewedItems(viewedItems);

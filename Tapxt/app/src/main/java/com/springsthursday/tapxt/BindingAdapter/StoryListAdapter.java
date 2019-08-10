@@ -22,30 +22,32 @@ import com.springsthursday.tapxt.databinding.RecyclerviewStorylistBinding;
 import com.springsthursday.tapxt.item.CommentItem;
 import com.springsthursday.tapxt.item.StoryItem;
 import com.springsthursday.tapxt.listener.CommentClickListener;
+import com.springsthursday.tapxt.listener.StoryClickListener;
 
 import java.util.ArrayList;
 
 public class StoryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<StoryItem> items = new ArrayList<StoryItem>();
 
-   /* public StoryListAdapter(CommentClickListener listener, Context context)
+    private StoryClickListener listener;
+
+   public StoryListAdapter(StoryClickListener listener)
     {
         this.listener = listener;
-        this.context = context;
-    }*/
+    }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_storylist, parent, false);
-
         return new StoryListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         StoryItem item = items.get(holder.getAdapterPosition());
+        ((StoryListViewHolder)holder).setClickListener(item);
         ((StoryListViewHolder) holder).binding.setStoryItem(item);
     }
 
@@ -63,10 +65,22 @@ public class StoryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public class StoryListViewHolder extends RecyclerView.ViewHolder {
         private RecyclerviewStorylistBinding binding;
+        private View itemView;
 
         public StoryListViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
+            this.itemView = itemView;
+        }
+
+        public void setClickListener(StoryItem item)
+        {
+            this.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.storyClick(item);
+                }
+            });
         }
     }
 }

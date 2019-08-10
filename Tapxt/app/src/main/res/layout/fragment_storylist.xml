@@ -6,7 +6,8 @@
             type="com.springsthursday.tapxt.presenter.StoryListPresenter" />
     </data>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
@@ -14,6 +15,9 @@
         bindStoryListAdapter="@{viewModel.adapter}"
         bindStoryListItems="@{viewModel.items}"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp" />
 </android.support.constraint.ConstraintLayout>
 </layout>

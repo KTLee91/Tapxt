@@ -84,6 +84,14 @@ query getUserProfile
                   }
                 }
               }
+                  withoutDuplicationViewed
+                  {
+                    story{
+                      id
+                      title
+                      cover
+                    }
+                  }
     }
 }
 

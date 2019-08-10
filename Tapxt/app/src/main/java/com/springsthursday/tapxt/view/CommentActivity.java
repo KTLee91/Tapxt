@@ -40,8 +40,11 @@ public class CommentActivity extends AppCompatActivity implements CommentContrac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(getResources().getColor(R.color.titlebar, null));
-        getWindow().setNavigationBarColor(getColor(R.color.background));
+        Window window = getWindow();
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setNavigationBarColor(getColor(R.color.background));
+        window.setStatusBarColor(getColor(R.color.titlebar));
 
         this.setContentView(R.layout.activity_comment);
 

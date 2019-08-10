@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -36,8 +37,11 @@ public class CommentUpdateActivity extends AppCompatActivity implements CommentU
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(getResources().getColor(R.color.titlebar, null));
-        getWindow().setNavigationBarColor(getColor(R.color.background));
+        Window window = getWindow();
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setNavigationBarColor(getColor(R.color.background));
+        window.setStatusBarColor(getColor(R.color.titlebar));
 
         setContentView(R.layout.activity_updatecomment);
 

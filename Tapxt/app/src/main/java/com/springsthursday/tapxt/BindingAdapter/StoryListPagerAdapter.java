@@ -6,17 +6,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.springsthursday.tapxt.Code.Code;
+import com.springsthursday.tapxt.constract.ProfileContract;
 import com.springsthursday.tapxt.view.StoryListFragment;
 
 public class StoryListPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
+    private ProfileContract.View activity;
 
-    public StoryListPagerAdapter(FragmentManager fragmentManager, int tabCount)
+    public StoryListPagerAdapter(FragmentManager fragmentManager, int tabCount, ProfileContract.View activity)
     {
         super(fragmentManager);
         this.tabCount = tabCount;
-
+        this.activity = activity;
     }
 
     @Override

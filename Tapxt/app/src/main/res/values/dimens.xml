@@ -105,4 +105,14 @@
     <dimen name="TextRightGoneMargin">42dp</dimen>
 
     <dimen name="ContentNickNameSize">12dp</dimen>
+
+
+    <!-- Setting Activity -->
+    <dimen name="SettingLeftLayoutMargin">12dp</dimen>
+    <dimen name="SettingTopLayoutMargin">18dp</dimen>
+    <dimen name="SettingTopContentMargin">6dp</dimen>
+    <dimen name="SettingDistanceLayout">24dp</dimen>
+
+    <dimen name="SettingTitleSize">24dp</dimen>
+    <dimen name="SettingContentSize">18dp</dimen>
 </resources>

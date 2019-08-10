@@ -12,9 +12,11 @@ public class MainPresenter{
 
     private MainContract.View activity;
     public ObservableField<String> appbarTitle = new ObservableField<>();
+    public ObservableField<Boolean> fit = new ObservableField<>();
 
     public MainPresenter(MainContract.View view){
         appbarTitle.set("");
+        fit.set(false);
         this.activity = view;
     }
 
@@ -26,6 +28,8 @@ public class MainPresenter{
         {
             case R.id.home:
                 fragmentName = Code.FragmentName.FGAGMENT_HOME;
+                fit.set(false);
+                fit.notifyChange();
                 appbarTitle.set("");
                 break;
             case R.id.category:
@@ -34,6 +38,8 @@ public class MainPresenter{
                 break;
             case R.id.profile:
                 fragmentName = Code.FragmentName.FRAGMENT_PROFILE;
+                fit.set(true);
+                fit.notifyChange();
                 appbarTitle.set("사용자 정보");
                 break;
         }

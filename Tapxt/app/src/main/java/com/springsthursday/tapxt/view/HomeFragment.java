@@ -124,4 +124,5 @@ public class HomeFragment extends Fragment implements HomeContract.View {
             viewModel.disposable.dispose();
         }
     }
+
 }

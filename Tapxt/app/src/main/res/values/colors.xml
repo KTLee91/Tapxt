@@ -5,11 +5,12 @@
     <color name="colorAccent">#A866EE</color>
 
     <color name="defaulitViolet">#C69CF4</color>
+    <color name="lightViolet">#E5D1FA</color>
     <color name="defaultGery">#9EA4AA</color>
     <color name="defaultWhite">#F7F2F2</color>
     <color name="defaultRed">#FFEC0F0F</color>
 
-    <color name="titlebar">#320A5C</color>
+    <color name="titlebar">#1d1428</color>
     <color name="background">#171818</color>
     <color name="gradientcolor">#FF292B2B</color>
     <color name="textColor">#F5EEEE</color>
