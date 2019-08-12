@@ -42,34 +42,23 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent, null));
+        }
         setContentView(R.layout.activity_main);
         //transparentStatusAndNavigation();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        getWindow().setNavigationBarColor(getColor(R.color.background));
-        getWindow().setStatusBarColor(getColor(android.R.color.transparent));
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            getWindow().setNavigationBarColor(getColor(R.color.background));
+        //getWindow().setStatusBarColor(getColor(R.color.titlebar));
 
         if (!NetWorkBrodcastReceiver.getInstance(getApplicationContext()).isOnline())
             Toast.makeText(getApplicationContext(), "네트워크 상태가 불안정합니다", Toast.LENGTH_LONG).show();
 
         this.setUpView();
-    }
-
-
-    private void transparentStatusAndNavigation() {
-        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
-        }
-        if (Build.VERSION.SDK_INT >= 19) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            );
-        }
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
     }
 
     private void setWindowFlag(final int bits, boolean on) {
@@ -106,9 +95,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     homeFragment = new HomeFragment();
                     fragmentManager.beginTransaction().add(R.id.frameLayout, homeFragment).commit();
                 }
-                binding.mainLayout.setFitsSystemWindows(false);
-                this.getWindow().getDecorView().requestFitSystemWindows();
-
                 fragmentManager.beginTransaction().show(homeFragment).commit();
 
                 if (categoryFragment != null)
@@ -136,10 +122,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     fragmentManager.beginTransaction().add(R.id.frameLayout, profileFragment).commit();
                 }
 
-                binding.mainLayout.setFitsSystemWindows(true);
-                this.getWindow().getDecorView().requestFitSystemWindows();
-
-                //bin.setPadding(0, 0, 0, 0);
                 fragmentManager.beginTransaction().show(profileFragment).commit();
                 if (homeFragment != null)
                     fragmentManager.beginTransaction().hide(homeFragment).commit();

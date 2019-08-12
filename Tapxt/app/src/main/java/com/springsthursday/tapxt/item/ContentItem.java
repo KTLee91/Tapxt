@@ -29,6 +29,7 @@ public class ContentItem {
     private boolean isItalic = false;
     private String color = "";
     private String background="";
+    private String contentAnimation = "";
 
     public String getEpisodeTitle() {
         return episodeTitle;
@@ -108,6 +109,10 @@ public class ContentItem {
 
     public String getContentTypeForString() {
         return contentTypeForString;
+    }
+
+    public String getContentAnimation() {
+        return contentAnimation;
     }
 
     public void setEpisodeTitle(String episodeTitle) {
@@ -192,5 +197,9 @@ public class ContentItem {
 
     public void setBackground(String background) {
         this.background = background;
+    }
+
+    public void setContentAnimation(String contentAnimation) {
+        this.contentAnimation = contentAnimation;
     }
 }

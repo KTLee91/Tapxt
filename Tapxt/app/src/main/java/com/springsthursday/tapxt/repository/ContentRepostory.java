@@ -100,6 +100,7 @@ public class ContentRepostory {
                 item.setItalic(content.contentProperty().italic());
                 item.setBackground(content.url());
                 item.setColor(content.color());
+                item.setContentAnimation(content.contentAnimation().animation());
 
                 preName = content.character().name();
                 prePosition = content.contentPosition().position();

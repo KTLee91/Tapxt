@@ -1,9 +1,13 @@
 package com.springsthursday.tapxt.BindingAdapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -32,10 +36,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public ArrayList<ContentItem> contentItems = new ArrayList<>();
     private ContentListener listener;
+    private Context context;
 
-    public ContentAdapter(ContentListener listener)
+    public ContentAdapter(ContentListener listener, Context context)
     {
         this.listener = listener;
+        this.context = context;
     }
 
     //region onCreatrViewHolder Method
@@ -67,7 +73,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_content_right, parent, false);
             return new RightFirstViewHolder(view);
         }
-        else if(viewType == Code.ContentType.NARRATION_CONTENT)
+        else if(viewType == Code.ContentType.NARRATION_CONTENT || viewType == Code.ContentType.CENTER_BOX_CONTENT)
         {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_content_narration, parent, false);
             return new NarrationViewHolder(view);
@@ -147,6 +153,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         else if(holder instanceof NarrationViewHolder) {
             ((NarrationViewHolder) holder).binding.setContentItem(item);
+
+            if(item.getContentType() == Code.ContentType.CENTER_BOX_CONTENT)
+            {
+                ((NarrationViewHolder)holder).binding.content.setBackgroundResource(R.drawable.rectangle_white);
+                GradientDrawable drawable = (GradientDrawable) ((NarrationViewHolder) holder).binding.content.getBackground();
+
+                drawable.setColorFilter(Color.parseColor(item.getBoxColor()) , PorterDuff.Mode.SRC_IN);
+            }
 
             ((NarrationViewHolder) holder).binding.content.setTextColor(Color.parseColor(item.getTextColor()));
             this.setTextViewStyle(((NarrationViewHolder) holder).binding.content, item);

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -55,7 +56,9 @@ public class ContentActivity extends AppCompatActivity implements ContentContrac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(getColor(R.color.titlebar));
+        getWindow().setNavigationBarColor(getColor(R.color.background));
+
+        getWindow().setStatusBarColor(getColor(R.color.background));
         getWindow().setNavigationBarColor(getColor(R.color.background));
 
         this.setContentView(R.layout.activity_content);

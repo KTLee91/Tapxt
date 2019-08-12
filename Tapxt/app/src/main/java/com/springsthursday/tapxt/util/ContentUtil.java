@@ -14,6 +14,10 @@ public class ContentUtil {
         {
             return Code.ContentType.NARRATION_CONTENT;
         }
+        else if(content.contentPosition().position().equals("center_box"))
+        {
+            return Code.ContentType.CENTER_BOX_CONTENT;
+        }
         else if(content.contentPosition().position().equals("left"))
         {
             if(isContextScene == false)

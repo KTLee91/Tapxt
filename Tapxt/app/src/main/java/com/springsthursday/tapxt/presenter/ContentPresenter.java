@@ -119,7 +119,7 @@ public class ContentPresenter {
         sceneBackgroudSound = new HashMap<>();
         animationSet = new AnimationSet(false);
 
-        adapter.set(new ContentAdapter(new ContextPreSceneClickListener()));
+        adapter.set(new ContentAdapter(new ContextPreSceneClickListener(), context));
         adapter.get().setHasStableIds(true);
         //endregion
     }
@@ -288,7 +288,7 @@ public class ContentPresenter {
 
         if (currentScene == 1) {
             adapter.get().addItem(ContentRepostory.getInstance().getDummyContent(), 0);
-            ;
+
             indexContentOfScene = 0;
         } else {
             ArrayList<ContentItem> itemList = new ArrayList<>();
@@ -397,8 +397,15 @@ public class ContentPresenter {
             this.contextScene(item);
         }
 
+        if(item.getContentAnimation().equals("transparent"))
+        {
+            ((DefaultItemAnimator) recyclerView.getItemAnimator()).setAddDuration(800);
+        }
+
         adapter.get().addItem(item, indexContentOfScene);
         this.scrollToEndPosition();
+
+        ((DefaultItemAnimator) recyclerView.getItemAnimator()).setRemoveDuration(0);
 
         indexContentOfScene++;
         contentsequence++;

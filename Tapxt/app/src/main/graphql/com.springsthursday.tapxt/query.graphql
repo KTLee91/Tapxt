@@ -147,6 +147,11 @@ mutation seeEpisode($id : String!)
                     bold
                     italic
                 }
+                contentAnimation{
+                    id
+                    title
+                    animation
+                }
                 character{
                     name
                     avatar

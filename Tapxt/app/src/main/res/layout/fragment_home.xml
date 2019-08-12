@@ -27,7 +27,7 @@
                 android:id="@+id/toolbarlayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="@drawable/main_appbar_gradient"
+                app:contentScrim="@color/titlebar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:statusBarScrim="@color/titlebar"
                 app:toolbarId="@+id/toolbar">

@@ -17,7 +17,7 @@ public class Code {
         public static final int LEFT_SERIES_CONTENT = 3;
         public static final int RIGHT_SERIES_CONTENT = 4;
         public static final int NARRATION_CONTENT = 5;
-        public static final int CENTER_CONTENT = 6;
+        public static final int CENTER_BOX_CONTENT = 6;
         public static final int DUMMY_CONTENT = 7;
         public static final int LEFT_IMAGE = 8;
         public static final int RIGHT_IMAGE = 9;

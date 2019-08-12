@@ -2,18 +2,14 @@ package com.springsthursday.tapxt.BindingAdapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.airbnb.lottie.LottieAnimationView;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.databinding.RecyclerviewCommentBinding;
 import com.springsthursday.tapxt.item.CommentItem;
@@ -52,7 +48,6 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         else
         {
-
             Drawable drawable =  context.getResources().getDrawable(R.drawable.rectangle_white, null);
             drawable.setColorFilter(context.getResources().getColor(R.color.defaulitViolet, null), PorterDuff.Mode.SRC_IN);
 
