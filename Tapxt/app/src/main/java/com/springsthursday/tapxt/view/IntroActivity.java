@@ -15,11 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
-import com.airbnb.lottie.LottieDrawable;
 import com.springsthursday.tapxt.R;
 import com.springsthursday.tapxt.constract.IntroContract;
 import com.springsthursday.tapxt.databinding.ActivityIntroBinding;

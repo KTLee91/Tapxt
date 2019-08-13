@@ -32,10 +32,10 @@ public class MainPresenter{
                 fit.notifyChange();
                 appbarTitle.set("");
                 break;
-            case R.id.category:
+            /*case R.id.category:
                 fragmentName = Code.FragmentName.FRAGMENT_CATEGORY;
                 appbarTitle.set("카테고리");
-                break;
+                break;*/
             case R.id.profile:
                 fragmentName = Code.FragmentName.FRAGMENT_PROFILE;
                 fit.set(true);
